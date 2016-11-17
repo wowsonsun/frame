@@ -1,0 +1,18 @@
+[
+	{
+		"id": 1,
+		"displayName": "主页面",
+		"initId":1,
+		"children": [{
+			"id": 2,
+			"displayName": "系统管理",
+			"initId":2,
+			"children": [{
+				"id": 3,
+				"initId":3,
+				"displayName": "菜单管理",
+				"requestURI": "/menu/list"
+			}]
+		}]
+	}
+]

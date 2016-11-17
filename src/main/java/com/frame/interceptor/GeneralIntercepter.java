@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.frame.controller.IndexController;
+import com.frame.core.components.ThreadBinder;
 import com.frame.core.components.UserAuthoritySubject;
 import com.frame.core.utils.ApplicationConfigUtil;
 
@@ -24,6 +26,7 @@ public class GeneralIntercepter implements HandlerInterceptor {
 			IGNORE_LIST.add(o.toString());
 		}
 	}
+	public static final String REQUEST_URI_THREAD_KEY="requestURI";
 	private boolean matchIgnore(String requestURI){
 		for (String string : IGNORE_LIST) {
 			if (requestURI.matches(string)) return true;
@@ -39,6 +42,8 @@ public class GeneralIntercepter implements HandlerInterceptor {
 			response.sendRedirect(request.getContextPath()+"/login");
 			return false;
 		}
+		if (ThreadBinder.get(REQUEST_URI_THREAD_KEY)==null) 
+			ThreadBinder.set(REQUEST_URI_THREAD_KEY, requestURI);
 		return true;
 	}
 
