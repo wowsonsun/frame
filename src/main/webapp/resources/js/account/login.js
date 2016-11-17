@@ -6,36 +6,58 @@
 			'':'',
 			1:'用户名或密码错误',
 			2:'请输入用户名',
-			3:'请输入密码'
-	}
-	frame.controller("loginController",function($scope){
-		$scope.messageDictionary=messageDictionary;
-		$scope.validate=function(){
-			if ($scope.loginForm.userLoginVerification.$error.required){
-				$scope.message="2";
-			}else if($scope.loginForm.userPassword.$error.required){
-				$scope.message="3";
-			}else{
-				$scope.message="";
+			3:'请输入密码',
+			4:'用户名过长',
+			5:'密码过长'
+	};
+	var validate=function(){
+		var u=$('#userLoginVerification').val();
+		if (u.length==0) {
+			$('#loginMessage').text(messageDictionary[2]);
+			return false;
+		}
+		if (u.length>31){
+			$('#loginMessage').text(messageDictionary[4]);
+			return false;
+		}
+		var p=$('#userPassword').val();
+		if (p.length==0) {
+			$('#loginMessage').text(messageDictionary[3]);
+			return false;
+		}
+		if (p.length>31) {
+			$('#loginMessage').text(messageDictionary[5]);
+			return false;
+		}
+		$('#loginMessage').text('');
+		return true;
+	};
+	var submit=function(){
+		if(validate())
+			submitParams("","POST",{
+				userLoginVerification:$('#userLoginVerification').val(),
+				userPassword:$('#userPassword').val()
+			});
+	};
+	$(document).ready(function(){
+		var $div=$('#loginMessage');
+		$div.text(messageDictionary[$div.attr("message")]);
+		$('#userLoginVerification').on("keyup",function(){
+			validate();
+		}).on("keydown",function(e){
+			var keycode = window.event?e.keyCode:e.which;
+			if(keycode==13){
+				submit();
 			}
-		}
-		$scope.submit=function(){
-			if(!$scope.loginForm.userLoginVerification.$error.required&&!$scope.loginForm.userPassword.$error.required){
-				$scope.user.userPassword=encrypt($scope.user.userLoginVerification+$scope.user.userPassword);
-				submitParams("","POST",$scope.user);
+		});
+		$('#userPassword').on("keyup",function(){
+			validate();
+		}).on("keydown",function(e){
+			var keycode = window.event?e.keyCode:e.which;
+			if(keycode==13){
+				submit();
 			}
-		}
-		$scope.regist=function(){
-			console.log("REGIST");
-		}
-		$scope.keydown = function(e){
-            var keycode = window.event?e.keyCode:e.which;
-            console.log("keydown");
-            if(keycode==13){
-            	$scope.submit();
-            }
-        };
-//		user.userLoginVerification
-//		user.userPassword
+		});
+		$('#loginSubmit').on('click',submit);
 	});
 })();

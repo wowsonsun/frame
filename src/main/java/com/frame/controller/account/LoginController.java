@@ -21,7 +21,7 @@ public class LoginController extends BaseController{
 		if(userService.login(userLoginVerification, userPassword)==0){
 			return "redirect:/main";
 		}else{
-			return new ModelAndView("account/login").addObject("userLoginVerification", userLoginVerification).addObject("message", "1");
+			return new ModelAndView("account/login").addObject("userLoginVerification", userLoginVerification).addObject("message", userLoginVerification==null?"":"1");
 		}
 	}
 }

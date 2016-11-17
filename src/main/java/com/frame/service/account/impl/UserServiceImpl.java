@@ -27,6 +27,7 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public int login(String userLoginVerification, String userPassword) {
 		if (StringUtils.isEmpty(userLoginVerification)||StringUtils.isEmpty(userPassword)) return 1;
+		if (userLoginVerification.length()>31||userPassword.length()>31) return 1;
 		try {
 			userPassword=AesEncryptUtils.aesDecrypt(userPassword);
 		} catch (Exception e) {
