@@ -33,11 +33,14 @@
 		return true;
 	};
 	var submit=function(){
-		if(validate())
+		if(validate()){
+			var u=$('#userLoginVerification').val();
+			var p=u+$('#userPassword').val();
 			submitParams("","POST",{
-				userLoginVerification:$('#userLoginVerification').val(),
-				userPassword:$('#userPassword').val()
+				userLoginVerification:u,
+				userPassword:encrypt(p)
 			});
+		}
 	};
 	$(document).ready(function(){
 		var $div=$('#loginMessage');
