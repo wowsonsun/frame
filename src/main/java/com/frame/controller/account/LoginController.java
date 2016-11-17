@@ -7,11 +7,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.frame.controller.BaseController;
 import com.frame.service.account.UserService;
 
 @Controller
 @RequestMapping({"/"})
-public class LoginController {
+public class LoginController extends BaseController{
 	private final static Logger LOGGER=LoggerFactory.getLogger(LoginController.class);
 	@Autowired
 	private UserService userService;

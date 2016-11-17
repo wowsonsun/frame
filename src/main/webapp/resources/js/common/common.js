@@ -59,9 +59,5 @@
 		document.body.innerHTML+=(form);
 		document.getElementById(id).submit();
 	};
-	window.frame=angular.module("frame",['ngAnimate']);
-	frame.controller("decorator",function($scope){
-		
-	});
 })();
 
