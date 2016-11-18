@@ -6,11 +6,10 @@
     background-color: #252626;
 	color:#fbfdff;
 }
-.menu-wrapper ul ul li{
+.menu-wrapper ul li{
 	padding-left: 20px;
 	transition: all linear 0.2s;
 	overflow: hidden;
-	height:28px;
 }
 .menu-wrapper ul ul li.ng-hide{
 	height:0;

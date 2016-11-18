@@ -17,10 +17,11 @@ public class MenuEntity extends BaseEntity {
 	private static final long serialVersionUID = 2283028973673917967L;
 	private String displayName;
 	private String requestURI;
+	private boolean hidden;
 	@ManyToOne(fetch=FetchType.LAZY)
 	private MenuEntity parent;
 	@OneToMany(fetch=FetchType.LAZY,cascade=CascadeType.ALL)
-	@JoinColumn(name="parentId")
+	@JoinColumn(name="parent_id")
 	private List<MenuEntity> children;
 	public List<MenuEntity> getChildren() {
 		return children;
@@ -45,5 +46,11 @@ public class MenuEntity extends BaseEntity {
 	}
 	public void setParent(MenuEntity parent) {
 		this.parent = parent;
+	}
+	public boolean getHidden() {
+		return hidden;
+	}
+	public void setHidden(boolean hidden) {
+		this.hidden = hidden;
 	}
 }

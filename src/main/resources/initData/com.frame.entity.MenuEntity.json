@@ -3,6 +3,7 @@
 		"id": 1,
 		"displayName": "主页面",
 		"initId":1,
+		"requestURI": "/main",
 		"children": [{
 			"id": 2,
 			"displayName": "系统管理",
@@ -11,7 +12,14 @@
 				"id": 3,
 				"initId":3,
 				"displayName": "菜单管理",
-				"requestURI": "/menu/list"
+				"requestURI": "/menu/",
+				"children": [{
+					"id": 3,
+					"initId":3,
+					"displayName": "添加",
+					"requestURI": "/menu/add",
+					"hidden":true
+				}]
 			}]
 		}]
 	}
