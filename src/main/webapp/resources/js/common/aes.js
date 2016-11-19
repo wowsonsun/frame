@@ -60,3 +60,17 @@ CryptoJS.mode.ECB = (function () {
 
     return ECB;
 }());
+(function(){
+	window.ek="IwSe70Ts2IY9Xc+i";
+	window.encrypt=function(word){
+		var key = CryptoJS.enc.Utf8.parse(ek);   
+        var srcs = CryptoJS.enc.Utf8.parse(word);  
+        var encrypted = CryptoJS.AES.encrypt(srcs, key, {mode:CryptoJS.mode.ECB,padding: CryptoJS.pad.Pkcs7});  
+        return encrypted.toString();  
+	};
+	window.decrypt=function(word){  
+        var key = CryptoJS.enc.Utf8.parse(ek);   
+        var decrypt = CryptoJS.AES.decrypt(word, key, {mode:CryptoJS.mode.ECB,padding: CryptoJS.pad.Pkcs7});  
+        return CryptoJS.enc.Utf8.stringify(decrypt).toString();  
+	};
+})();

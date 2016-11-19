@@ -1,20 +1,20 @@
 <link rel="stylesheet" href="${ctx}/resources/css/common/page-menu.css"/>
-<script src="${ctx}/resources/js/common/angular-page-menu.js"></script>
+<script src="${ctx}/resources/js/common/page-menu.js"></script>
 
 
-<div class="menu-wrapper" ng-controller="menuController" >
+<div class="menu-wrapper" id="menu">
 	<#macro menu menuList>
 		<ul>
 			<#list menuList as menuItem>
 				<#if !menuItem.hidden>
-					<li>
-					<div>${menuItem.displayName}</div>
+				<li>
+					<div class="menuItem" url="${menuItem.requestURI!''}">${menuItem.displayName}</div>
 					<#if menuItem.children??>
 						<@menu menuItem.children/>
 					</#if>
+				</li>
 				</#if>
 			</#list>
-			</li>
 		</ul>
 	</#macro>
 	<@menu menuList></@menu>

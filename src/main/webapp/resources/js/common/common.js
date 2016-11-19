@@ -31,18 +31,6 @@
 	    var basePath = local.protocol+"//"+local.host/*+":"+local.port*/+"/"+contextPath;
 	    return basePath;
 	})();
-	window.ek="IwSe70Ts2IY9Xc+i";
-	window.encrypt=function(word){
-		var key = CryptoJS.enc.Utf8.parse(ek);   
-        var srcs = CryptoJS.enc.Utf8.parse(word);  
-        var encrypted = CryptoJS.AES.encrypt(srcs, key, {mode:CryptoJS.mode.ECB,padding: CryptoJS.pad.Pkcs7});  
-        return encrypted.toString();  
-	};
-	window.decrypt=function(word){  
-        var key = CryptoJS.enc.Utf8.parse(ek);   
-        var decrypt = CryptoJS.AES.decrypt(word, key, {mode:CryptoJS.mode.ECB,padding: CryptoJS.pad.Pkcs7});  
-        return CryptoJS.enc.Utf8.stringify(decrypt).toString();  
-	};
 	window.submitParams=function(url,method,data){
 		var form='<form id="{id}" action="{url}" method="{method}">{inputs}</form>';
 		if (method=="get"||method=="GET"||method=="Get")
@@ -51,7 +39,7 @@
 			}
 		var inputsTemplate="<input type=\"hidden\" name=\"{name}\" value=\"{value}\"/>";
 		var inputs="";
-		for(e in data){
+		if (!!data) for(e in data){
 			inputs+=(inputsTemplate.format({name:e,value:data[e]}));
 		}
 		var id=encrypt(new Date());

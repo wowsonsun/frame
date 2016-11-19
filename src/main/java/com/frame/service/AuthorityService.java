@@ -1,6 +1,7 @@
 package com.frame.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import com.frame.entity.MenuEntity;
 @Service
 @Transactional
 public class AuthorityService {
+	public static final String NAVIGATION_OPTIONS_KEY="NAVIGATION_OPTIONS_KEY";
 	@Autowired
 	GeneralDao dao;
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -30,5 +32,19 @@ public class AuthorityService {
 			resList.add(menuEntity);
 		}
 		return resList;
+	}
+	public List<MenuEntity> getMenuLocation(String requestURI){
+		if (requestURI.charAt(requestURI.length()-1)=='/') requestURI=requestURI.substring(0, requestURI.length()-1);
+		MenuEntity target=dao.get("from MenuEntity where requestURI like ? and LENGTH(requestURI)<=? order by id desc", requestURI+"%",requestURI.length()+1);
+		List<MenuEntity> menuList=new ArrayList<MenuEntity>();
+		if (target!=null){
+			menuList.add(target);
+			while(target.getParent()!=null){
+				target=target.getParent();
+				menuList.add(target);
+			}
+			Collections.reverse(menuList);
+		}
+		return menuList;
 	}
 }
