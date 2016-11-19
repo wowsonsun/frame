@@ -8,7 +8,7 @@
 	</div>
 	<div class="navigation-bar-wrap">
 		<div class="navigation-bar">
-			<ul class="navigations">
+			<ul id="navigations" class="navigations">
 				<#list navigation as menuEntity>
 				<li url="${menuEntity.requestURI}">${menuEntity.displayName}</li>
 				<#if menuEntity_has_next><split></split></#if>
