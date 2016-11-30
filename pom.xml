@@ -60,8 +60,8 @@
 			<properties>
 				<db.driver>com.mysql.jdbc.Driver</db.driver>
 				<db.username>root</db.username>
-				<db.password>root</db.password>
-				<db.url>jdbc:mysql://127.0.0.1:3306/frame</db.url>
+				<db.password></db.password>
+				<db.url>jdbc:mysql://127.0.0.1:3306/frame?useUnicode=true&amp;amp;characterEncoding=utf8</db.url>
 
 				<hibernate.dialect>org.hibernate.dialect.MySQL5Dialect</hibernate.dialect>
 				<hibernate.hbm2ddl.auto>update</hibernate.hbm2ddl.auto>

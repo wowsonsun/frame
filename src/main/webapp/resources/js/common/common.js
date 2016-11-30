@@ -47,5 +47,15 @@
 		document.body.innerHTML+=(form);
 		document.getElementById(id).submit();
 	};
+	jQuery.ajaxSetup({
+	    contentType : "application/x-www-form-urlencoded;charset=utf-8",
+	    complete : function(XMLHttpRequest, textStatus) {
+	        var sessionstatus = XMLHttpRequest.getResponseHeader("SESSION_STATUS"); // 通过XMLHttpRequest取得响应头，sessionstatus，
+	        if (sessionstatus == "TIME_OUT") {
+	            // 如果超时就处理 ，指定要跳转的页面
+	            window.location.href=ctx+"/login";
+	        }
+	    }
+	}); 
 })();
 

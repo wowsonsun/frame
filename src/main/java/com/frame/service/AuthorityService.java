@@ -41,6 +41,8 @@ public class AuthorityService {
 			menuList.add(target);
 			while(target.getParent()!=null){
 				target=target.getParent();
+				target.getDisplayName();
+				target.getRequestURI();
 				menuList.add(target);
 			}
 			Collections.reverse(menuList);

@@ -12,8 +12,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.frame.core.components.NavigationOption;
 import com.frame.core.components.ThreadBinder;
 import com.frame.entity.MenuEntity;
-import com.frame.interceptor.GeneralIntercepter;
 import com.frame.service.AuthorityService;
+import com.frame.webapp.interceptor.GeneralIntercepter;
 
 @Controller
 @RequestMapping({"/"})

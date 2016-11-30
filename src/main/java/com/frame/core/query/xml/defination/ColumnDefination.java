@@ -11,6 +11,7 @@ public class ColumnDefination {
 	private boolean hidden=false;
 	private boolean staticColumn=false;
 	private String filter;
+	//private String queryComparator;
 	@XmlAttribute
 	public String getHeader() {
 		return header;

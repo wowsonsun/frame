@@ -1,8 +1,5 @@
-package com.frame.interceptor;
+package com.frame.webapp.interceptor;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,41 +11,33 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.frame.core.components.ThreadBinder;
 import com.frame.core.components.UserAuthoritySubject;
-import com.frame.core.utils.ApplicationConfigUtil;
-import com.frame.webapp.controller.IndexController;
 
 public class GeneralIntercepter implements HandlerInterceptor {
 	private final static Logger LOGGER=LoggerFactory.getLogger(GeneralIntercepter.class);
-//	private final static List<String> IGNORE_LIST=new ArrayList<String>();
-//	static{
-//		Properties p=ApplicationConfigUtil.load("ignores", "/config/ignore.properties", GeneralIntercepter.class);
-//		for (Object o : p.keySet()) {
-//			IGNORE_LIST.add(o.toString());
-//		}
-//	}
 	public static final String REQUEST_URI_THREAD_KEY=GeneralIntercepter.class.getName()+".requestURI";
 	public static final String REQUEST_URI_BEFORE_LOGIN_THREAD_KEY=GeneralIntercepter.class.getName()+".REQUESTURI_BEFOTRLOGIN";
-//	private boolean matchIgnore(String requestURI){
-//		for (String string : IGNORE_LIST) {
-//			if (requestURI.matches(string)) return true;
-//		}
-//		return false;
-//	}
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		String requestURI=request.getServletPath();
-//		if (matchIgnore(requestURI)) return true;
+		if (requestURI.startsWith("/resources/")) return true;
 		if (!UserAuthoritySubject.isUserVerify()&&requestURI.indexOf("login")==-1){
-			response.sendRedirect(request.getContextPath()+"/login");
-			request.getSession().setAttribute(REQUEST_URI_BEFORE_LOGIN_THREAD_KEY, requestURI);
-			return false;
+			if (isAjax(request)){
+				response.setHeader("SESSION_STATUS", "TIME_OUT");
+				return false;
+			}else{
+				response.sendRedirect(request.getContextPath()+"/login");
+				request.getSession().setAttribute(REQUEST_URI_BEFORE_LOGIN_THREAD_KEY, requestURI);
+				return false;
+			}
 		}
 		if (ThreadBinder.get(REQUEST_URI_THREAD_KEY)==null) 
 			ThreadBinder.set(REQUEST_URI_THREAD_KEY, requestURI);
 		return true;
 	}
-
+	private static boolean isAjax(HttpServletRequest request){
+		return request.getHeader("x-requested-with") != null && request.getHeader("x-requested-with").equals("XMLHttpRequest");
+    }
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
