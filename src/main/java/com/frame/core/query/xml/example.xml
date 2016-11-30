@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<defination>
+	<queryDefination showIndex="序号">
+		<mappedClass mappedClass="com.frame.entity.MenuEntity"
+			alias="m1" />
+		<mappedClass mappedClass="com.frame.entity.MenuEntity"
+			alias="m2" />
+		<mappedClass mappedClass="com.frame.entity.MenuEntity"
+			alias="m3">
+			<join field="parent" as="p" />
+		</mappedClass>
+		<where></where>
+		<sortBy field="id" fromAlias="p" order="ASC"></sortBy>
+		
+	</queryDefination>
+</defination>

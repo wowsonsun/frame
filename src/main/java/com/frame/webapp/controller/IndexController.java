@@ -1,4 +1,4 @@
-package com.frame.controller;
+package com.frame.webapp.controller;
 
 import java.util.List;
 

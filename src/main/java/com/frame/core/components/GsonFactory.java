@@ -1,5 +1,7 @@
 package com.frame.core.components;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -62,6 +64,31 @@ public class GsonFactory {
 			@Override
 			public JsonElement serialize(Date src, Type typeOfSrc, JsonSerializationContext context) {
 				return new JsonPrimitive(dateFormart2.format(src));
+			}
+		}).registerTypeAdapter(Class.class, new JsonSerializer<Class<?>>() {
+			@Override
+			public JsonElement serialize(Class<?> src, Type typeOfSrc, JsonSerializationContext context) {
+				return new JsonPrimitive(src.getName());
+			}
+		}).registerTypeAdapter(Class.class, new JsonDeserializer<Class<?>>() {
+
+			@Override
+			public Class<?> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+					throws JsonParseException {
+				try {
+					return Class.forName(json.getAsString());
+				} catch (ClassNotFoundException e) {
+					throw new JsonParseException(e);
+				}
+			}
+		}).registerTypeAdapter(Throwable.class, new JsonSerializer<Throwable>() {
+			@Override
+			public JsonElement serialize(Throwable src, Type typeOfSrc, JsonSerializationContext context) {
+				StringWriter sw=new StringWriter();
+				PrintWriter pw=new PrintWriter(sw);
+				src.printStackTrace(pw);
+				pw.close();
+				return new JsonPrimitive(sw.toString());
 			}
 		}).create();
 	}

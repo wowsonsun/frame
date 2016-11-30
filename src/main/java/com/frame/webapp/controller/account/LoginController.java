@@ -1,12 +1,12 @@
-package com.frame.controller.account;
+package com.frame.webapp.controller.account;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.frame.controller.BaseController;
 import com.frame.service.account.UserService;
+import com.frame.webapp.controller.BaseController;
 
 @Controller
 @RequestMapping({"/"})

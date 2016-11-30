@@ -1,4 +1,4 @@
-package com.frame.controller;
+package com.frame.webapp.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

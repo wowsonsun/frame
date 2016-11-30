@@ -12,34 +12,36 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.frame.controller.IndexController;
 import com.frame.core.components.ThreadBinder;
 import com.frame.core.components.UserAuthoritySubject;
 import com.frame.core.utils.ApplicationConfigUtil;
+import com.frame.webapp.controller.IndexController;
 
 public class GeneralIntercepter implements HandlerInterceptor {
 	private final static Logger LOGGER=LoggerFactory.getLogger(GeneralIntercepter.class);
-	private final static List<String> IGNORE_LIST=new ArrayList<String>();
-	static{
-		Properties p=ApplicationConfigUtil.load("ignores", "/config/ignore.properties", GeneralIntercepter.class);
-		for (Object o : p.keySet()) {
-			IGNORE_LIST.add(o.toString());
-		}
-	}
-	public static final String REQUEST_URI_THREAD_KEY="requestURI";
-	private boolean matchIgnore(String requestURI){
-		for (String string : IGNORE_LIST) {
-			if (requestURI.matches(string)) return true;
-		}
-		return false;
-	}
+//	private final static List<String> IGNORE_LIST=new ArrayList<String>();
+//	static{
+//		Properties p=ApplicationConfigUtil.load("ignores", "/config/ignore.properties", GeneralIntercepter.class);
+//		for (Object o : p.keySet()) {
+//			IGNORE_LIST.add(o.toString());
+//		}
+//	}
+	public static final String REQUEST_URI_THREAD_KEY=GeneralIntercepter.class.getName()+".requestURI";
+	public static final String REQUEST_URI_BEFORE_LOGIN_THREAD_KEY=GeneralIntercepter.class.getName()+".REQUESTURI_BEFOTRLOGIN";
+//	private boolean matchIgnore(String requestURI){
+//		for (String string : IGNORE_LIST) {
+//			if (requestURI.matches(string)) return true;
+//		}
+//		return false;
+//	}
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		String requestURI=request.getServletPath();
-		if (matchIgnore(requestURI)) return true;
+//		if (matchIgnore(requestURI)) return true;
 		if (!UserAuthoritySubject.isUserVerify()&&requestURI.indexOf("login")==-1){
 			response.sendRedirect(request.getContextPath()+"/login");
+			request.getSession().setAttribute(REQUEST_URI_BEFORE_LOGIN_THREAD_KEY, requestURI);
 			return false;
 		}
 		if (ThreadBinder.get(REQUEST_URI_THREAD_KEY)==null) 
