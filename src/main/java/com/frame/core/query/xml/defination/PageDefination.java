@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import com.frame.entity.MenuEntity;
 import com.google.gson.Gson;
 @XmlRootElement
-public class Defination {
+public class PageDefination {
 	public static class SaveOrUpdate{
 		
 	}
@@ -40,9 +40,9 @@ public class Defination {
 //		 marshaller.marshal(d, System.out);  
 //	}
 	public static void main(String[] args) throws JAXBException {
-		JAXBContext context=JAXBContext.newInstance(Defination.class);
+		JAXBContext context=JAXBContext.newInstance(PageDefination.class);
 		Unmarshaller unmarshaller = context.createUnmarshaller();  
-		Defination d= (Defination) unmarshaller.unmarshal(Defination.class.getResource("../example.xml"));
+		PageDefination d= (PageDefination) unmarshaller.unmarshal(PageDefination.class.getResource("../example.xml"));
 		System.out.println(d);
 	}
 	/*public void beanToXML() {  

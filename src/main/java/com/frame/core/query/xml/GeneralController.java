@@ -8,12 +8,32 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.frame.core.query.xml.defination.PageDefination;
 @Controller
 public abstract class GeneralController {
+	public static class GeneralControllerInitException extends RuntimeException{
+		private static final long serialVersionUID = -7376890176830677560L;
+		public GeneralControllerInitException(Throwable e){
+			super(e);
+		}
+	}
 	protected final Logger LOGGER=LoggerFactory.getLogger(this.getClass()); 
+	private PageDefinationHolder pageHolder;
+	public GeneralController(){
+		Class<?> loader=this.getClass();
+		String xmlFileName=loader.getAnnotation(com.frame.core.query.xml.annoation.PageDefination.class).value();
+		pageHolder=new PageDefinationHolder(xmlFileName, loader);
+	}
+	
+	
+	
+	
+	
 	@RequestMapping("/")
 	public Object list(){
-		return "/menu/main";
+		pageHolder.refreshIfOutOfDate();
+		return "/common/list";
 	}
 	
 	@ExceptionHandler(value=Throwable.class)

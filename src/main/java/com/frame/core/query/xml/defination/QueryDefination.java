@@ -3,6 +3,8 @@ package com.frame.core.query.xml.defination;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 
 public class QueryDefination {
 	private List<MappedClassEntry> mappedClass;
@@ -35,6 +37,8 @@ public class QueryDefination {
 	public void setShowIndex(String showIndex) {
 		this.showIndex = showIndex;
 	}
+	@XmlElementWrapper(name="columns")
+	@XmlElement(name="column")
 	public List<ColumnDefination> getColumns() {
 		return columns;
 	}
