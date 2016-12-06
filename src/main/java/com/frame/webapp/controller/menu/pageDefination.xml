@@ -10,5 +10,6 @@
 		<columns>
 			<column header="ID" field="id" fromAlias="m" width="10%" sortable="true" hidden="false" staticColumn="false"></column>
 		</columns>
+		<pageSize>10</pageSize>
 	</queryDefination>
 </pageDefination>

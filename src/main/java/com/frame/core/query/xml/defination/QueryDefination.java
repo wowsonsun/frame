@@ -12,6 +12,7 @@ public class QueryDefination {
 	private List<SortEntry> sortBy;
 	private String showIndex;
 	private List<ColumnDefination> columns;
+	private int pageSize=10;
 	public List<MappedClassEntry> getMappedClass() {
 		return mappedClass;
 	}
@@ -44,5 +45,11 @@ public class QueryDefination {
 	}
 	public void setColumns(List<ColumnDefination> columns) {
 		this.columns = columns;
+	}
+	public int getPageSize() {
+		return pageSize;
+	}
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
 	}
 }

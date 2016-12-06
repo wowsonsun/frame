@@ -9,5 +9,8 @@ import com.frame.core.query.xml.annoation.PageDefination;
 @RequestMapping("/menu")
 @PageDefination("pageDefination.xml")
 public class MenuController extends GeneralController {
-	
+	public static void main(String[] args) {
+		MenuController m=new MenuController();
+		System.out.println(m);
+	}
 }

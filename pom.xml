@@ -74,12 +74,13 @@
 			<properties>
 				<db.driver>com.mysql.jdbc.Driver</db.driver>
 				<db.username>root</db.username>
-				<db.password>root</db.password>
+				<db.password></db.password>
 				<db.url>jdbc:mysql://127.0.0.1:3306/frame</db.url>
 
 				<hibernate.dialect>org.hibernate.dialect.MySQL5Dialect</hibernate.dialect>
 				<hibernate.hbm2ddl.auto>update</hibernate.hbm2ddl.auto>
 				<hibernate.format_sql>false</hibernate.format_sql>
+				<hibernate.show_sql>true</hibernate.show_sql>
 			</properties>
 		</profile>
 	</profiles>
