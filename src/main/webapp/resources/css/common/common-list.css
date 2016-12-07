@@ -30,3 +30,28 @@
 	text-align: center;
 	padding: 20px 0;
 }
+div#pagerbar {
+    font-family: "黑体";
+    font-weight: bold;
+    color: #fbfdff;
+    background-color: #252626;
+}
+div#pagerbar>* {
+	border:none;
+	width:30px;
+	padding: 5px 0;
+	outline: none;
+	display: inline-block;
+    text-align: center;
+}
+div#pagerbar>*:not(input):not(.disabled):hover{
+	cursor: default;
+	background-color:#888; 
+}
+div#pagerbar>.disabled{
+	color:#888;
+}
+div#pagerbar>#jump{
+	width:30px;
+	padding: 3px;
+}

@@ -47,7 +47,14 @@
 </table>
 <#if pageList?size==0><div class="list-empty" colspan="255">列表空空如也、</div></#if>
 <div id="pagerbar" class="pagerbar">
-${totalPageCount}
+<gofrist class="${(queryConditions.page>1)?string('','disabled')}">|&lt;</gofrist>
+<goprev class="${(queryConditions.page>1)?string('','disabled')}">&lt;</goprev>
+<input id="jump" type="number" value="${queryConditions.page}"/>/${totalPageCount}
+<gonext class="${(queryConditions.page<totalPageCount)?string('','disabled')}">&gt;</gonext>
+<golast class="${(queryConditions.page<totalPageCount)?string('','disabled')}">&gt;|</golast>
+<input type="hidden" id="totalPageCount" value="${totalPageCount}"/>
+<input type="hidden" id="page" value="${queryConditions.page}"/>
+<input type="hidden" id="pageSize" value="${queryConditions.pageSize}"/>
 </div>
 </div>	
 </body>
