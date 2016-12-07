@@ -1,6 +1,7 @@
 package com.frame.core.query.xml.defination;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 public class ColumnDefination {
 	private String header;
@@ -9,8 +10,9 @@ public class ColumnDefination {
 	private String width;
 	private String sortable;
 	private boolean hidden=false;
-	private boolean staticColumn=false;
-	private String filter;
+	private String staticColumnData;
+	private Class<?> filter;
+	private String callback;
 	//private String queryComparator;
 	@XmlAttribute
 	public String getHeader() {
@@ -55,17 +57,25 @@ public class ColumnDefination {
 		this.hidden = hidden;
 	}
 	@XmlAttribute
-	public boolean getStaticColumn() {
-		return staticColumn;
+	public String getCallback() {
+		return callback;
 	}
-	public void setStaticColumn(boolean staticColumn) {
-		this.staticColumn = staticColumn;
+	public void setCallback(String callback) {
+		this.callback = callback;
 	}
 	@XmlAttribute
-	public String getFilter() {
+	@XmlJavaTypeAdapter(value=MappedClassEntry.class)
+	public Class<?> getFilter() {
 		return filter;
 	}
-	public void setFilter(String filter) {
+	public void setFilter(Class<?> filter) {
 		this.filter = filter;
+	}
+	@XmlAttribute
+	public String getStaticColumnData() {
+		return staticColumnData;
+	}
+	public void setStaticColumnData(String staticColumnData) {
+		this.staticColumnData = staticColumnData;
 	}
 }

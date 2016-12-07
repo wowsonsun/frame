@@ -2,10 +2,53 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>菜单管理</title>
+<link rel="stylesheet" href="${ctx}/resources/css/common/common-list.css"/>
+<script type="text/javascript" src="${ctx}/resources/js/common/common-list.js"></script>
 </head>
 <body>
-暂时没放什么信息  菜单管理 ${ctx }   1 
-	
+<div class="query-panel">
+</div>
+<div class="data-panel">
+<#assign columns=pageDefination.queryDefination.columns/>
+<!--  <#--	private String header;
+	private String field;
+	private String fromAlias;
+	private String width;
+	private String sortable;
+	private boolean hidden=false;
+	private String staticColumnData;
+	private Class<?> filter;
+	private String callback;-->-->
+<table  border="0" cellspacing="0" cellpadding="0">
+	<thead>
+		<tr>
+			<#if pageDefination.queryDefination.showIndex??>
+			<th >${pageDefination.queryDefination.showIndex}</th>
+			</#if>
+			<#list columns as column>
+			<th 
+				<#if column.hidden>hidden<#elseif column.width??>style="width:${column.width};"</#if>
+				<#--sort-->
+			>${column.header!''}</th>
+		</#list></tr>
+	</thead>
+	<tbody>
+		<#list pageList as strarr>
+		<tr>
+			<#if pageDefination.queryDefination.showIndex??>
+			<td>${strarr_index+1}</td>
+			</#if>
+			<#list strarr as str>
+			<td>${str}</td>
+			</#list>
+		</tr>
+		</#list>
+	</tbody>
+</table>
+<#if pageList?size==0><div class="list-empty" colspan="255">列表空空如也、</div></#if>
+<div id="pagerbar" class="pagerbar">
+${totalPageCount}
+</div>
+</div>	
 </body>
 </html>

@@ -1,0 +1,9 @@
+/**
+ * 
+ */
+$(document).ready(function(){
+	$('.data-panel>table').on("click","tbody>tr",function(e){
+		$(this).siblings().removeClass("selected");
+		$(this).addClass("selected");
+	});
+});

@@ -8,13 +8,18 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+
 import com.frame.core.query.xml.defination.PageDefination;
 
 public class PageDefinationHolder {
+	private static final Logger LOGGER=LoggerFactory.getLogger(PageDefinationHolder.class);
 	public static class PageDefinationLoadException extends RuntimeException{
 		private static final long serialVersionUID = 4989620748698016255L;
 		public PageDefinationLoadException(Throwable t){super(t);}
-		
 	}
 	PageDefination page;
 	String fileName;
@@ -29,11 +34,12 @@ public class PageDefinationHolder {
 	public void refresh(){
 		JAXBContext context;
 		try {
-			URL url= loader.getResource(fileName);
-			if ("file".equals(url.getProtocol())) lastModified = new File(url.getFile()).lastModified();
+			LOGGER.info("Load pageDefination: "+fileName+",use class "+loader);
+			Resource resource= new ClassPathResource(fileName, loader);
+			if ("file".equals(resource.getURL().getProtocol())) lastModified = resource.getFile().lastModified();
 			context = JAXBContext.newInstance(PageDefination.class);
 			Unmarshaller unmarshaller = context.createUnmarshaller();  
-			page = (PageDefination) unmarshaller.unmarshal(url.openStream());
+			page = (PageDefination) unmarshaller.unmarshal(resource.getInputStream());
 		} catch (JAXBException | IOException e) {
 			throw new PageDefinationLoadException(e);
 		}
@@ -51,17 +57,18 @@ public class PageDefinationHolder {
 	public void refreshIfOutOfDate(){
 		JAXBContext context;
 		try {
-			URL url= loader.getResource(fileName);
-			if ("file".equals(url.getProtocol())){
-				long lastModified = new File(url.getFile()).lastModified();
+			Resource resource= new ClassPathResource(fileName, loader);
+			if ("file".equals(resource.getURL().getProtocol())){
+				long lastModified = resource.getFile().lastModified();
 				if (this.lastModified>=lastModified) return;
 				this.lastModified=lastModified;
 			}else{
 				return;
 			}
+			LOGGER.info("pageDefination out of date reload pageDefination: "+fileName+",use class "+loader);
 			context = JAXBContext.newInstance(PageDefination.class);
 			Unmarshaller unmarshaller = context.createUnmarshaller();  
-			page = (PageDefination) unmarshaller.unmarshal(url.openStream());
+			page = (PageDefination) unmarshaller.unmarshal(resource.getInputStream());
 		} catch (JAXBException | IOException e) {
 			throw new PageDefinationLoadException(e);
 		}

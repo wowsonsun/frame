@@ -26,13 +26,15 @@ public class GeneralIntercepter implements HandlerInterceptor {
 				response.setHeader("SESSION_STATUS", "TIME_OUT");
 				return false;
 			}else{
-				response.sendRedirect(request.getContextPath()+"/login");
 				request.getSession().setAttribute(REQUEST_URI_BEFORE_LOGIN_THREAD_KEY, requestURI);
+				response.sendRedirect(request.getContextPath()+"/login");
 				return false;
 			}
 		}
-		if (ThreadBinder.get(REQUEST_URI_THREAD_KEY)==null) 
+		if (ThreadBinder.get(REQUEST_URI_THREAD_KEY)==null) {
 			ThreadBinder.set(REQUEST_URI_THREAD_KEY, requestURI);
+			LOGGER.info("Intercepter-> set requestURI : "+requestURI);
+		}
 		return true;
 	}
 	private static boolean isAjax(HttpServletRequest request){

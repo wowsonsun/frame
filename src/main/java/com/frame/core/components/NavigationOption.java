@@ -6,6 +6,12 @@ public class NavigationOption implements Serializable{
 	private static final long serialVersionUID = -2860245224761084736L;
 	private String name;
 	private String callback;
+	public NavigationOption(){}
+	public NavigationOption(String name, String callback) {
+		super();
+		this.name = name;
+		this.callback = callback;
+	}
 	public String getName() {
 		return name;
 	}

@@ -47,7 +47,7 @@
 		document.body.innerHTML+=(form);
 		document.getElementById(id).submit();
 	};
-	jQuery.ajaxSetup({
+	$.ajaxSetup({
 	    contentType : "application/x-www-form-urlencoded;charset=utf-8",
 	    complete : function(XMLHttpRequest, textStatus) {
 	        var sessionstatus = XMLHttpRequest.getResponseHeader("SESSION_STATUS"); // 通过XMLHttpRequest取得响应头，sessionstatus，

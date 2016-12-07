@@ -32,13 +32,15 @@ public class IndexController extends BaseController{
 	@RequestMapping({"/decorator"})
 	public Object decorator(){
 		String requestURI=ThreadBinder.get(GeneralIntercepter.REQUEST_URI_THREAD_KEY);
+		ThreadBinder.set(GeneralIntercepter.REQUEST_URI_THREAD_KEY, null);
 		List<MenuEntity> menuLocation=authorityService.getMenuLocation(requestURI);
 		List<MenuEntity> menuList=authorityService.getMenuList();
 		List<NavigationOption> options=ThreadBinder.get(AuthorityService.NAVIGATION_OPTIONS_KEY);
 		return new ModelAndView("decorator/decorator")
 				.addObject("navigation", menuLocation)
 				.addObject("options", options)
-				.addObject("menuList", menuList);
+				.addObject("menuList", menuList)
+				.addObject("currentLocation", menuLocation.size()>0?menuLocation.get(menuLocation.size()-1):new MenuEntity());
 	}
 	  
 }

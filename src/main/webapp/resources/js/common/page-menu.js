@@ -4,6 +4,7 @@
 (function(){
 	$(document).ready(function(){
 		$('#menu ul ul').hide();
+		$('#menu ul:has(.current)').show();
 		$('#menu .menuItem').on('click',function(){
 			var $next=$(this).next();
 			if ($next.children().length>0)
@@ -14,7 +15,7 @@
 				}
 			var url=$(this).attr("url");
 			if (!!url&&url.length>0){
-				submitParams(ctx+url,"POST");
+				submitParams(ctx+url,"GET");
 			}
 				
 		});

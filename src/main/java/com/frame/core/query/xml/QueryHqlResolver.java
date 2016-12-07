@@ -17,7 +17,18 @@ public class QueryHqlResolver {
 		appendSelectFields(sb, defination, conditions);
 		appendFrom(sb, defination, conditions);
 		appendWhere(sb, defination, conditions);
+		appendSort(sb, defination, conditions);
 		return sb.toString();
+	}
+	public static String generateCount(QueryDefination defination,List<QueryCondition> conditions){
+		StringBuilder sb=new StringBuilder();
+		appendCount(sb);
+		appendFrom(sb, defination, conditions);
+		appendWhere(sb, defination, conditions);
+		return sb.toString();
+	}
+	public static void appendCount(StringBuilder sb){
+		sb.append("select count(0) ");
 	}
 	public static void appendSelectFields(StringBuilder sb,QueryDefination defination,List<QueryCondition> conditions){
 		sb.append(" select ");
@@ -26,12 +37,13 @@ public class QueryHqlResolver {
 		int index=0;
 		for (Iterator<ColumnDefination> iterator = columns.iterator(); iterator.hasNext();index++) {
 			ColumnDefination column = iterator.next();
-			if (column.getStaticColumn()) continue;
+			if (column.getStaticColumnData()!=null) continue;
 			if (!StringUtils.isEmpty(column.getFromAlias())) sb.append(column.getFromAlias()).append('.');
 			sb.append(column.getField());
 			sb.append(" as col_"+index);
-			if (iterator.hasNext()) sb.append(", ");
+			sb.append(", ");
 		}
+		sb.delete(sb.length()-2, sb.length());
 	}
 	public static void appendFrom(StringBuilder sb,QueryDefination defination,List<QueryCondition> conditions){
 		sb.append(" from ");// MenuEntity p join p.children as child 
@@ -71,6 +83,9 @@ public class QueryHqlResolver {
 			}
 			sb.append(" ? ");
 		}
+	}
+	public static void appendSort(StringBuilder sb,QueryDefination defination,List<QueryCondition> conditions){
+		//TODO
 	}
 	public static void main(String[] args) {
 		System.out.println(List.class.isAssignableFrom(ArrayList.class));
