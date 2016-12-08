@@ -6,12 +6,53 @@
 	<version>1.0-snapshot</version>
 	<name>frame</name>
 	<packaging>war</packaging>
-	<build>
+	<properties>
+		<version>1.0-snapshot</version>
+		<spring-version>4.3.3.RELEASE</spring-version>
+		<hibernate-version>4.3.6.Final</hibernate-version>
+		<slf4j-version>1.7.13</slf4j-version>
+		<log4j-version>2.7</log4j-version>
+		<junit-verison>4.12</junit-verison>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.jdk.version>1.7</project.build.jdk.version>
+	</properties>
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <db.driver>com.mysql.jdbc.Driver</db.driver>
+                <db.username>root</db.username>
+                <db.password></db.password>
+                <db.url>jdbc:mysql://127.0.0.1:3306/frame?useUnicode=true&amp;amp;characterEncoding=utf8</db.url>
+
+                <hibernate.dialect>org.hibernate.dialect.MySQL5Dialect</hibernate.dialect>
+                <hibernate.hbm2ddl.auto>update</hibernate.hbm2ddl.auto>
+                <hibernate.format_sql>false</hibernate.format_sql>
+                <hibernate.show_sql>true</hibernate.show_sql>
+            </properties>
+        </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <db.driver>com.mysql.jdbc.Driver</db.driver>
+                <db.username>root</db.username>
+                <db.password></db.password>
+                <db.url>jdbc:mysql://127.0.0.1:3306/frame</db.url>
+
+                <hibernate.dialect>org.hibernate.dialect.MySQL5Dialect</hibernate.dialect>
+                <hibernate.hbm2ddl.auto>update</hibernate.hbm2ddl.auto>
+                <hibernate.format_sql>false</hibernate.format_sql>
+                <hibernate.show_sql>true</hibernate.show_sql>
+            </properties>
+        </profile>
+    </profiles>
+    <build>
 		<plugins>
 			<!-- 设置源文件编码方式 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+                <version>3.6.0</version>
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
@@ -27,9 +68,15 @@
 		</plugins>
 		<resources>
 			<resource>
-				<directory>${project.basedir}/src/main/*</directory>
+				<directory>${project.basedir}/src/main/resources</directory>
 				<filtering>true</filtering>
-				<includes><include>**/*.*</include></includes>
+			</resource>
+			<resource>
+				<directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+				<filtering>true</filtering>
 			</resource>
 		</resources>
 		<testResources>
@@ -39,46 +86,6 @@
 			</testResource>
 		</testResources>
 	</build>
-	<properties>
-		<version>1.0-snapshot</version>
-		<spring-version>4.3.3.RELEASE</spring-version>
-		<hibernate-version>4.3.6.Final</hibernate-version>
-		<slf4j-version>1.7.13</slf4j-version>
-		<log4j-version>2.7</log4j-version>
-		<junit-verison>4.12</junit-verison>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.build.jdk.version>1.7</project.build.jdk.version>
-	</properties>
-	<profiles>
-		<profile>
-			<id>dev</id>
-			<properties>
-				<db.driver>com.mysql.jdbc.Driver</db.driver>
-				<db.username>root</db.username>
-				<db.password></db.password>
-				<db.url>jdbc:mysql://127.0.0.1:3306/frame?useUnicode=true&amp;amp;characterEncoding=utf8</db.url>
-
-				<hibernate.dialect>org.hibernate.dialect.MySQL5Dialect</hibernate.dialect>
-				<hibernate.hbm2ddl.auto>update</hibernate.hbm2ddl.auto>
-				<hibernate.format_sql>false</hibernate.format_sql>
-				<hibernate.show_sql>true</hibernate.show_sql>
-			</properties>
-		</profile>
-		<profile>
-			<id>test</id>
-			<properties>
-				<db.driver>com.mysql.jdbc.Driver</db.driver>
-				<db.username>root</db.username>
-				<db.password></db.password>
-				<db.url>jdbc:mysql://127.0.0.1:3306/frame</db.url>
-
-				<hibernate.dialect>org.hibernate.dialect.MySQL5Dialect</hibernate.dialect>
-				<hibernate.hbm2ddl.auto>update</hibernate.hbm2ddl.auto>
-				<hibernate.format_sql>false</hibernate.format_sql>
-				<hibernate.show_sql>true</hibernate.show_sql>
-			</properties>
-		</profile>
-	</profiles>
 	<dependencies>
 		<dependency>
 			<groupId>javax</groupId>
