@@ -13,7 +13,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<defaultLibBundleDir>lib</defaultLibBundleDir>
 					<source>1.7</source>
 					<target>1.7</target>
 					<encoding>UTF-8</encoding>
@@ -28,18 +27,17 @@
 		</plugins>
 		<resources>
 			<resource>
-				<directory>${project.basedir}/src/main/resources</directory>
-				<filtering>
-					true
-				</filtering>
+				<directory>${project.basedir}/src/main/*</directory>
+				<filtering>true</filtering>
+				<includes><include>**/*.*</include></includes>
 			</resource>
 		</resources>
-		<testresources>
-			<testresource>
+		<testResources>
+			<testResource>
 				<directory>${project.basedir}/src/test/resources</directory>
 				<filtering>true</filtering>
-			</testresource>
-		</testresources>
+			</testResource>
+		</testResources>
 	</build>
 	<properties>
 		<version>1.0-snapshot</version>
@@ -54,9 +52,6 @@
 	<profiles>
 		<profile>
 			<id>dev</id>
-			<activation>
-				<activebydefault>true</activebydefault>
-			</activation>
 			<properties>
 				<db.driver>com.mysql.jdbc.Driver</db.driver>
 				<db.username>root</db.username>
