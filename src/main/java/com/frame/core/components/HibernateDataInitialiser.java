@@ -2,8 +2,8 @@ package com.frame.core.components;
 
 
 import java.lang.reflect.Field;
-import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -30,8 +30,10 @@ public class HibernateDataInitialiser extends HibernateDaoSupport{
 			for (Object[] objects : objss) {
 				int count=0;
 				for (Object object:objects) {
-					List<?> list=this.getHibernateTemplate().find("from "+object.getClass().getName()+" where initId=?",getInitId(object) );
-					if (list.size()==0){
+					Query q=session.createQuery("select count(0) from "+object.getClass().getName()+" where initId=?");
+					q.setParameter(0, getInitId(object));
+					long c=(long) q.uniqueResult();
+					if (c==0){
 						session.save(object);
 						if ((count++)%countToflush==0) session.flush(); 
 					}
