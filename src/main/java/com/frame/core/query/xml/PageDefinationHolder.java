@@ -38,7 +38,7 @@ public class PageDefinationHolder {
 			Resource resource= new ClassPathResource(fileName, loader);
 			if ("file".equals(resource.getURL().getProtocol())) lastModified = resource.getFile().lastModified();
 			context = JAXBContext.newInstance(PageDefination.class);
-			Unmarshaller unmarshaller = context.createUnmarshaller();  
+			Unmarshaller unmarshaller = context.createUnmarshaller();
 			page = (PageDefination) unmarshaller.unmarshal(resource.getInputStream());
 		} catch (JAXBException | IOException e) {
 			throw new PageDefinationLoadException(e);
@@ -67,7 +67,7 @@ public class PageDefinationHolder {
 			}
 			LOGGER.info("pageDefination out of date reload pageDefination: "+fileName+",use class "+loader);
 			context = JAXBContext.newInstance(PageDefination.class);
-			Unmarshaller unmarshaller = context.createUnmarshaller();  
+			Unmarshaller unmarshaller = context.createUnmarshaller();
 			page = (PageDefination) unmarshaller.unmarshal(resource.getInputStream());
 		} catch (JAXBException | IOException e) {
 			throw new PageDefinationLoadException(e);

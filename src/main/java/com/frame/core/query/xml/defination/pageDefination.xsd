@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema id="pageDefination"
+           targetNamespace="http://dc.com/pageDefination"
+           xmlns="http://dc.com/pageDefination"
+           xmlns:mstns="http://dc.com/pageDefination"
+           attributeFormDefault="unqualified"
+           elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="pageDefination">
+    <xs:annotation>
+      <xs:documentation>
+        随便写写
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="queryDefination" minOccurs="1" maxOccurs="1">
+          <xs:complexType>
+            <xs:attribute name="showIndex"></xs:attribute>
+            <xs:sequence minOccurs="1">
+              <xs:element name="mappedClass">
+                <xs:complexType>
+                  <xs:attribute name="mappedClass" use="required"></xs:attribute>
+                  <xs:attribute name="alias"></xs:attribute>
+                  <xs:sequence minOccurs="0">
+                    <xs:element name="join">
+                      <xs:complexType>
+                        <xs:attribute name="field" use="required"></xs:attribute>
+                        <xs:attribute name="as"></xs:attribute>
+                        <xs:attribute name="fromAlias"></xs:attribute>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:sequence minOccurs="0">
+              <xs:element name="where">
+              </xs:element>
+            </xs:sequence>
+            <xs:sequence minOccurs="0">
+              <xs:element name="sort">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="by">
+                      <xs:complexType>
+                        <xs:attribute name="field" use="required"></xs:attribute>
+                        <xs:attribute name="fromAlias"></xs:attribute>
+                        <xs:attribute name="order" use="required">
+                          <xs:simpleType>
+                            <xs:restriction base="xs:NMTOKEN">
+                              <xs:enumeration value="ASC"/>
+                              <xs:enumeration value="DESC"/>
+                            </xs:restriction>
+                          </xs:simpleType>
+                        </xs:attribute>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:sequence minOccurs="1" maxOccurs="1">
+              <xs:element name="columns">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="column">
+                      <xs:complexType>
+                        <xs:attribute name="field" use="required"></xs:attribute>
+                        <xs:attribute name="header"></xs:attribute>
+                        <xs:attribute name="fromAlias"></xs:attribute>
+                        <xs:attribute name="width"></xs:attribute>
+                        <xs:attribute name="sortable" type="xs:boolean"></xs:attribute>
+                        <xs:attribute name="hidden" type="xs:boolean"></xs:attribute>
+                        <xs:attribute name="filter"></xs:attribute>
+                        <xs:attribute name="staticColumnData"></xs:attribute>
+                        <xs:attribute name="operator">
+                          <xs:simpleType>
+                            <xs:restriction base="xs:NMTOKEN">
+                              <xs:enumeration value="!="/>
+                              <xs:enumeration value="<>"/>
+                              <xs:enumeration value="=="/>
+                              <xs:enumeration value="<"/>
+                              <xs:enumeration value=">"/>
+                              <xs:enumeration value="<="/>
+                              <xs:enumeration value=">="/>
+                              <xs:enumeration value="LIKE"/>
+                              <xs:enumeration value="BETWEEN"/>
+                            </xs:restriction>
+                          </xs:simpleType>
+                        </xs:attribute>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:sequence minOccurs="0" maxOccurs="1">
+              <xs:element name="pageSize" type="xs:integer">
+              </xs:element>
+            </xs:sequence>
+            <xs:sequence maxOccurs="1" minOccurs="0">
+              <xs:element name="js">
+                <xs:complexType>
+                  <xs:sequence minOccurs="0">
+                    <xs:element name="path" type="xs:anyURI"></xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:sequence maxOccurs="1" minOccurs="0">
+              <xs:element name="css">
+                <xs:complexType>
+                  <xs:sequence minOccurs="0">
+                    <xs:element name="path" type="xs:anyURI"></xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <!--<xs:complexType name="pageDefinationType">
+    <xs:element name="pageDefination">
+      <xs:complexType>
+        <xs:element name="queryDefination">
+          <xs:attribute name="showIndex" type="xs:string"></xs:attribute>
+          <xs:sequence minOccurs="1">
+            <xs:complexType name="mappedClass">
+              <xs:attribute name="mappedClass" type="xs:string" use="required"></xs:attribute>
+              <xs:attribute name="alias" type="xs:string"></xs:attribute>
+              <xs:sequence minOccurs="0">
+                <xs:complexType name="join">
+                  <xs:attribute name="field" type="xs:string"></xs:attribute>
+                  <xs:attribute name="fromAlias" type="xs:string"></xs:attribute>
+                  <xs:attribute name="order" type="xs:string">
+                    <xs:simpleType>
+                      <xs:restriction base="xs:string">
+                        <xs:pattern value="ASC|DESC" />
+                      </xs:restriction>
+                    </xs:simpleType>
+                  </xs:attribute>
+                </xs:complexType>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:sequence>
+        </xs:element>
+        <xs:sequence>
+          <xs:complexType name="where">
+          </xs:complexType>
+        </xs:sequence>
+        <xs:element name="columns">
+
+        </xs:element>
+        &lt;!&ndash;TODO saveOrUpdate delete&ndash;&gt;
+      </xs:complexType>
+
+    </xs:element>
+  </xs:complexType>-->
+</xs:schema>

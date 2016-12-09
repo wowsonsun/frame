@@ -55,4 +55,22 @@ public class QueryDefination {
 	public void setPageSize(int pageSize) {
 		this.pageSize = pageSize;
 	}
+	private List<String> requiredJsPath;
+	private List<String> requiredCssPath;
+	@XmlElement(name="path")
+	@XmlElementWrapper(name = "js")
+	public List<String> getRequiredJsPath() {
+		return requiredJsPath;
+	}
+	public void setRequiredJsPath(List<String> requiredJsPath) {
+		this.requiredJsPath = requiredJsPath;
+	}
+	@XmlElement(name="path")
+	@XmlElementWrapper(name = "css")
+	public List<String> getRequiredCssPath() {
+		return requiredCssPath;
+	}
+	public void setRequiredCssPath(List<String> requiredCssPath) {
+		this.requiredCssPath = requiredCssPath;
+	}
 }

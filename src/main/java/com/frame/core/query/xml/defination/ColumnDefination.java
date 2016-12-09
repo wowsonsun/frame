@@ -13,7 +13,7 @@ public class ColumnDefination {
 	private String staticColumnData;
 	private Class<?> filter;
 	private String callback;
-	//private String queryComparator;
+	private String queryComparator;
 	@XmlAttribute
 	public String getHeader() {
 		return header;
@@ -77,5 +77,12 @@ public class ColumnDefination {
 	}
 	public void setStaticColumnData(String staticColumnData) {
 		this.staticColumnData = staticColumnData;
+	}
+	@XmlAttribute(name="operator")
+	public String getQueryComparator() {
+		return queryComparator;
+	}
+	public void setQueryComparator(String queryComparator) {
+		this.queryComparator = queryComparator;
 	}
 }
