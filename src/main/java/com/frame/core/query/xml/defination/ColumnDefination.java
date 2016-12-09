@@ -8,7 +8,7 @@ public class ColumnDefination {
 	private String field;
 	private String fromAlias;
 	private String width;
-	private String sortable;
+	private boolean sortable=false;
 	private boolean hidden=false;
 	private String staticColumnData;
 	private Class<?> filter;
@@ -43,10 +43,10 @@ public class ColumnDefination {
 		this.width = width;
 	}
 	@XmlAttribute
-	public String getSortable() {
+	public boolean getSortable() {
 		return sortable;
 	}
-	public void setSortable(String sortable) {
+	public void setSortable(boolean sortable) {
 		this.sortable = sortable;
 	}
 	@XmlAttribute

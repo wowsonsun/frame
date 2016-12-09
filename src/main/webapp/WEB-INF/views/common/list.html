@@ -26,10 +26,7 @@
 			<th >${pageDefination.queryDefination.showIndex}</th>
 			</#if>
 			<#list columns as column>
-			<th 
-				<#if column.hidden>hidden<#elseif column.width??>style="width:${column.width};"</#if>
-				<#--sort-->
-			>${column.header!''}</th>
+			<th field="${column.field}" fromAlias="${column.fromAlias}" ${(column.hidden)?string("hidden",(column.width??)?string("style=\"width:"+column.width+";\"",""))} ${column.sortable?string("sortable","")} ${mergedSort[column_index]}>${column.header!''}</th>
 		</#list></tr>
 	</thead>
 	<tbody>
@@ -47,11 +44,11 @@
 </table>
 <#if pageList?size==0><div class="list-empty" colspan="255">列表空空如也、</div></#if>
 <div id="pagerbar" class="pagerbar">
-<gofrist class="${(queryConditions.page>1)?string('','disabled')}">|&lt;</gofrist>
-<goprev class="${(queryConditions.page>1)?string('','disabled')}">&lt;</goprev>
+<gofrist class="${(queryConditions.page>1)?string('','disabled')}"></gofrist>
+<goprev class="${(queryConditions.page>1)?string('','disabled')}"></goprev>
 <input id="jump" type="number" value="${queryConditions.page}"/>/${totalPageCount}
-<gonext class="${(queryConditions.page<totalPageCount)?string('','disabled')}">&gt;</gonext>
-<golast class="${(queryConditions.page<totalPageCount)?string('','disabled')}">&gt;|</golast>
+<gonext class="${(queryConditions.page<totalPageCount)?string('','disabled')}"></gonext>
+<golast class="${(queryConditions.page<totalPageCount)?string('','disabled')}"></golast>
 <input type="hidden" id="totalPageCount" value="${totalPageCount}"/>
 <input type="hidden" id="page" value="${queryConditions.page}"/>
 <input type="hidden" id="pageSize" value="${queryConditions.pageSize}"/>

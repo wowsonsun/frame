@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.frame.core.components.UserAuthoritySubject;
+import org.sitemesh.webapp.contentfilter.HttpServletRequestFilterable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,8 +33,8 @@ public class IndexController extends BaseController{
 	AuthorityService authorityService;
 	@RequestMapping({"/decorator"})
 	public Object decorator(){
-		String requestURI=ThreadBinder.get(GeneralIntercepter.REQUEST_URI_THREAD_KEY);
-		ThreadBinder.set(GeneralIntercepter.REQUEST_URI_THREAD_KEY, null);
+		String requestURI= (String) UserAuthoritySubject.getSession().getAttribute(GeneralIntercepter.REQUEST_URI_SESSION_KEY);
+		UserAuthoritySubject.getSession().setAttribute(GeneralIntercepter.REQUEST_URI_SESSION_KEY, null);
 		List<MenuEntity> menuLocation=authorityService.getMenuLocation(requestURI);
 		List<MenuEntity> menuList=authorityService.getMenuList();
 		List<NavigationOption> options=ThreadBinder.get(AuthorityService.NAVIGATION_OPTIONS_KEY);

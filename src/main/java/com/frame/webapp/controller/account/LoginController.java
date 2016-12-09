@@ -18,8 +18,6 @@ public class LoginController extends BaseController{
 	@RequestMapping("/login")
 	public Object login(String userLoginVerification,String userPassword){
 		if(userService.login(userLoginVerification, userPassword)==0){
-			ThreadBinder.set(GeneralIntercepter.REQUEST_URI_THREAD_KEY, "/main");
-			LOGGER.info("login-> set requestURI : /main");
 			return "redirect:/main";
 		}else{
 			return new ModelAndView("account/login").addObject("userLoginVerification", userLoginVerification).addObject("message", userLoginVerification==null?"":"1");

@@ -6,7 +6,9 @@
 			<join field="parent" as="p" fromAlias="m"/>
 		</mappedClass>
 		<where></where>
-		<sortBy field="id" fromAlias="m" order="ASC"></sortBy>
+		<sort>
+			<by field="id" fromAlias="m" order="ASC"></by>
+		</sort>
 		<columns>
 			<column header="ID" field="id" fromAlias="m" width="10%" sortable="true" hidden="false"></column>
 			<column header="名称" field="displayName" fromAlias="m" width="20%" sortable="true" hidden="false"></column>

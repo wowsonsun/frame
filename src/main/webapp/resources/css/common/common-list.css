@@ -55,3 +55,25 @@ div#pagerbar>#jump{
 	width:30px;
 	padding: 3px;
 }
+div#pagerbar>goprev:after {
+	content: "<";
+}
+div#pagerbar>gofrist:after {
+	content: "|<";
+}
+div#pagerbar>gonext:after {
+	content: ">";
+}
+div#pagerbar>golast:after {
+	content: ">|";
+}
+.data-panel>table th[sortable]:hover{
+	cursor:default;
+	background-color:#888;
+}
+.data-panel>table th[sortorder="ASC"]:after{
+	content: "↑";
+}
+.data-panel>table th[sortorder="DESC"]:after{
+	content: "↓";
+}

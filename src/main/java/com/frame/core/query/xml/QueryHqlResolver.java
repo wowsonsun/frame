@@ -4,20 +4,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.frame.core.query.xml.defination.*;
 import org.springframework.util.StringUtils;
 
-import com.frame.core.query.xml.defination.ColumnDefination;
-import com.frame.core.query.xml.defination.JoinEntry;
-import com.frame.core.query.xml.defination.MappedClassEntry;
-import com.frame.core.query.xml.defination.QueryDefination;
-
 public class QueryHqlResolver {
-	public static String generateSelect(QueryDefination defination,List<QueryCondition> conditions){
+	public static String generateSelect(QueryDefination defination,QueryConditions condition){
 		StringBuilder sb=new StringBuilder();
-		appendSelectFields(sb, defination, conditions);
-		appendFrom(sb, defination, conditions);
-		appendWhere(sb, defination, conditions);
-		appendSort(sb, defination, conditions);
+		appendSelectFields(sb, defination, condition.getConditions());
+		appendFrom(sb, defination, condition.getConditions());
+		appendWhere(sb, defination, condition.getConditions());
+		appendSort(sb, defination, condition);
 		return sb.toString();
 	}
 	public static String generateCount(QueryDefination defination,List<QueryCondition> conditions){
@@ -84,8 +80,18 @@ public class QueryHqlResolver {
 			sb.append(" ? ");
 		}
 	}
-	public static void appendSort(StringBuilder sb,QueryDefination defination,List<QueryCondition> conditions){
-		//TODO
+	public static void appendSort(StringBuilder sb,QueryDefination defination,QueryConditions conditions){
+		List<SortEntry> sortEntries=conditions.getSortEntries();
+		if (sortEntries.size()==0) return;
+		sb.append("order by ");
+		int index=0;
+		for (SortEntry sortEntry:sortEntries){
+			if (!StringUtils.isEmpty(sortEntry.getFromAlias())) sb.append(sortEntry.getFromAlias()).append(".");
+			sb.append(sortEntry.getField()).append(" ");
+			sb.append(sortEntry.getOrder());
+			if (index<sortEntries.size()-1) sb.append(",");
+			index++;
+		}
 	}
 	public static void main(String[] args) {
 		System.out.println(List.class.isAssignableFrom(ArrayList.class));

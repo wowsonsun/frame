@@ -8,6 +8,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.frame.entity.MenuEntity;
@@ -23,8 +26,8 @@ public class PageDefination {
 	private QueryDefination queryDefination;
 	private SaveOrUpdate saveOrUpdate;
 	private Delete delete;
-	private String requiredJsPath;
-	private String requiredCssPath;
+	private List<String> requiredJsPath;
+	private List<String> requiredCssPath;
 //	public static void main(String[] args) throws JAXBException {
 //		JAXBContext context=JAXBContext.newInstance(Defination.class);
 //		Defination d=new Defination();
@@ -63,5 +66,23 @@ public class PageDefination {
 	}
 	public void setQueryDefination(QueryDefination querydefination) {
 		this.queryDefination = querydefination;
+	}
+	@XmlElement(name="path")
+	@XmlElementWrapper(name = "js")
+	public List<String> getRequiredJsPath() {
+		return requiredJsPath;
+	}
+
+	public void setRequiredJsPath(List<String> requiredJsPath) {
+		this.requiredJsPath = requiredJsPath;
+	}
+	@XmlElement(name="path")
+	@XmlElementWrapper(name = "css")
+	public List<String> getRequiredCssPath() {
+		return requiredCssPath;
+	}
+
+	public void setRequiredCssPath(List<String> requiredCssPath) {
+		this.requiredCssPath = requiredCssPath;
 	}
 }

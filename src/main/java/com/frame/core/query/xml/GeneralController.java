@@ -6,6 +6,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.frame.core.query.xml.defination.ColumnDefination;
+import com.frame.core.query.xml.defination.SortEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,7 @@ public abstract class GeneralController {
 			super(e);
 		}
 	}
-	protected final Logger LOGGER=LoggerFactory.getLogger(this.getClass()); 
+	protected final Logger LOGGER=LoggerFactory.getLogger(this.getClass());
 	private PageDefinationHolder pageHolder;
 	public GeneralController(){
 		Class<?> loader=this.getClass();
@@ -37,17 +39,22 @@ public abstract class GeneralController {
 	}
 	@Autowired
 	private XmlQueryDefineService service;
-	
 	@RequestMapping("/")
 	public Object list(QueryConditions queryConditions){
 		pageHolder.refreshIfOutOfDate();
 		queryConditions.parseFromParamString();
+		if (queryConditions.getParamString()==null) {
+			for(SortEntry sortEntry:pageHolder.getPageDefination().getQueryDefination().getSortBy()){
+				queryConditions.getSortEntries().add(sortEntry);
+			}
+		}
 		ModelAndView mv=new ModelAndView("/common/list");
 		Object list= service.list(pageHolder.getPageDefination(), queryConditions);
 		mv.addObject("totalPageCount", service.totalPageCount(pageHolder.getPageDefination(), queryConditions));
 		mv.addObject("pageList",list);
 		mv.addObject("pageDefination", pageHolder.getPageDefination());
 		mv.addObject("queryConditions", queryConditions);
+		mv.addObject("mergedSort",mergeSortCondition(pageHolder.getPageDefination().getQueryDefination().getColumns(),queryConditions.getSortEntries()));
 		List<NavigationOption> options=new ArrayList<NavigationOption>();
 		options.add(new NavigationOption("添加", "void(0)"));
 		options.add(new NavigationOption("修改", "void(0)"));
@@ -55,7 +62,26 @@ public abstract class GeneralController {
 		ThreadBinder.set(AuthorityService.NAVIGATION_OPTIONS_KEY,options);
 		return mv;
 	}
-	
+	private String[] mergeSortCondition(List<ColumnDefination> columnDefinations,List<SortEntry> sortEntries){
+		String[] mergedSort=new String[columnDefinations.size()];
+		int index=0;
+		for (ColumnDefination columnDefination:columnDefinations) {
+			String order="";
+			for (SortEntry sortEntry:sortEntries) {
+				boolean isAliasEqual=
+						(columnDefination.getFromAlias()==null||"".equals(columnDefination.getFromAlias()))&&(sortEntry.getFromAlias()==null||"".equals(sortEntry.getFromAlias()))
+						||columnDefination.getFromAlias()!=null&&columnDefination.getFromAlias().equals(sortEntry.getFromAlias());
+				boolean isFieldEqual=columnDefination.getField().equals(sortEntry.getField());
+				if (isFieldEqual&&isAliasEqual){
+					order="sortOrder=\""+sortEntry.getOrder().toUpperCase()+"\" sortIndex=\""+index+"\"";
+					break;
+				}
+			}
+			mergedSort[index]=order;
+			index++;
+		}
+		return mergedSort;
+	}
 	@ExceptionHandler(value=Throwable.class)
 	public Object handleException(Throwable e,HttpServletRequest request,HttpServletResponse response) throws Throwable{
 		LOGGER.error("Control层捕获到异常。",e);

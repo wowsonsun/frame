@@ -1,5 +1,6 @@
 package com.frame.core.query.xml.defination;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -9,7 +10,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 public class QueryDefination {
 	private List<MappedClassEntry> mappedClass;
 	private String where;
-	private List<SortEntry> sortBy;
+	private List<SortEntry> sortBy=new ArrayList<SortEntry>();
 	private String showIndex;
 	private List<ColumnDefination> columns;
 	private int pageSize=10;
@@ -25,6 +26,8 @@ public class QueryDefination {
 	public void setWhere(String where) {
 		this.where = where;
 	}
+	@XmlElement(name="by")
+	@XmlElementWrapper(name="sort")
 	public List<SortEntry> getSortBy() {
 		return sortBy;
 	}

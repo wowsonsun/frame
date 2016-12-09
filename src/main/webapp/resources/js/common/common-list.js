@@ -1,13 +1,26 @@
 /**
- * 
+ * @author Defferson.Cheng
  */
 (function(){
 	window.submitQuery=function(){
 		var param={
 			page:$('#page').val(),
-			pageSize:$('#pageSize').val()
+			pageSize:$('#pageSize').val(),
+            sortEntries:[]
 		};
-		submitParams("","GET",param)
+		var $sortableTh=$('th[sortIndex]');
+		$sortableTh.each(function(){
+			param.sortEntries.push({
+                field:$(this).attr("field"),
+            	fromAlias:$(this).attr("fromAlias"),
+            	order:$(this).attr("sortOrder"),
+				index:$(this).attr("sortIndex")
+			});
+		});
+        param.sortEntries.sort(function(e1,e2){
+        	return e1.index-e2.index;
+		});
+		submitParams("","GET",{paramString:JSON.stringify(param)});
 	}
 })();
 $(document).ready(function(){
@@ -39,6 +52,20 @@ $(document).ready(function(){
 	});
 	$('golast:not(.disabled)').click(function(){
 		$('#page').val($('#totalPageCount').val());
+		submitQuery();
+	});
+	$('th[sortable]').click(function(){
+		var sortOrder=$(this).attr("sortOrder");
+		if (!sortOrder){
+			$(this).attr("sortIndex",-1);
+			$(this).attr("sortOrder","DESC");
+		}else if (sortOrder=="ASC"){
+            $(this).removeAttr("sortOrder");
+            $(this).removeAttr("sortIndex");
+		}else if (sortOrder=="DESC"){
+            $(this).attr("sortIndex",-1);
+            $(this).attr("sortOrder","ASC");
+		}
 		submitQuery();
 	});
 });

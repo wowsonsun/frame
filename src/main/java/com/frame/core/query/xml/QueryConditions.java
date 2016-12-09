@@ -1,12 +1,19 @@
 package com.frame.core.query.xml;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.List;
 
+import com.frame.core.components.ThreadBinder;
+import com.frame.core.query.xml.defination.SortEntry;
 import org.springframework.beans.BeanUtils;
 
 import com.frame.core.components.GsonFactory;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class QueryConditions {
 	private String paramString;
@@ -14,11 +21,18 @@ public class QueryConditions {
 	private List<QueryCondition> conditions;
 	private int page=1;
 	private int pageSize=10;
-	
+	private List<SortEntry> sortEntries=new ArrayList<SortEntry>();
+
+
 	public QueryConditions parseFromParamString(){
-		if (paramString!=null){ 
+		if (paramString!=null){
+			if (((HttpServletRequest)ThreadBinder.get(ThreadBinder.REQUEST)).getMethod().equalsIgnoreCase("get"))try {
+				paramString= URLDecoder.decode(paramString,"UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				throw new RuntimeException(e);
+			}
 			QueryConditions qcp=gson.fromJson(paramString, new TypeToken<QueryConditions>(){}.getType());
-			BeanUtils.copyProperties(qcp, this);
+			BeanUtils.copyProperties(qcp, this,"paramString");
 		}
 		return this;
 	}
@@ -45,5 +59,13 @@ public class QueryConditions {
 	}
 	public void setParamString(String paramString) {
 		this.paramString = paramString;
+	}
+
+	public List<SortEntry> getSortEntries() {
+		return sortEntries;
+	}
+
+	public void setSortEntries(List<SortEntry> sortEntries) {
+		this.sortEntries = sortEntries;
 	}
 }

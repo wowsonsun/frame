@@ -34,7 +34,7 @@ public class XmlQueryDefineService {
 	GeneralDao dao;
 	@SuppressWarnings("unchecked")
 	public Object list(PageDefination pageDefination,QueryConditions conditions){
-		String selectHql=QueryHqlResolver.generateSelect(pageDefination.getQueryDefination(), conditions.getConditions());
+		String selectHql=QueryHqlResolver.generateSelect(pageDefination.getQueryDefination(), conditions);
 		if (LOGGER.isInfoEnabled())
 			LOGGER.info("生成的查询HQL："+selectHql);
 		else System.out.println("生成的查询HQL："+selectHql);
