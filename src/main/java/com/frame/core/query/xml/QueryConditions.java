@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.frame.core.components.ThreadBinder;
-import com.frame.core.query.xml.defination.SortEntry;
+import com.frame.core.query.xml.definition.SortEntry;
 import org.springframework.beans.BeanUtils;
 
 import com.frame.core.components.GsonFactory;
