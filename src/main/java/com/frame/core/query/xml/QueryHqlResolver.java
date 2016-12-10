@@ -4,35 +4,35 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.frame.core.query.xml.defination.*;
+import com.frame.core.query.xml.definition.*;
 import org.springframework.util.StringUtils;
 
 public class QueryHqlResolver {
-	public static String generateSelect(QueryDefination defination,QueryConditions condition){
+	public static String generateSelect(QueryDefinition definition, QueryConditions condition){
 		StringBuilder sb=new StringBuilder();
-		appendSelectFields(sb, defination, condition.getConditions());
-		appendFrom(sb, defination, condition.getConditions());
-		appendWhere(sb, defination, condition.getConditions());
-		appendSort(sb, defination, condition);
+		appendSelectFields(sb, definition, condition.getConditions());
+		appendFrom(sb, definition, condition.getConditions());
+		appendWhere(sb, definition, condition.getConditions());
+		appendSort(sb, definition, condition);
 		return sb.toString();
 	}
-	public static String generateCount(QueryDefination defination,List<QueryCondition> conditions){
+	public static String generateCount(QueryDefinition definition, List<QueryCondition> conditions){
 		StringBuilder sb=new StringBuilder();
 		appendCount(sb);
-		appendFrom(sb, defination, conditions);
-		appendWhere(sb, defination, conditions);
+		appendFrom(sb, definition, conditions);
+		appendWhere(sb, definition, conditions);
 		return sb.toString();
 	}
 	public static void appendCount(StringBuilder sb){
 		sb.append("select count(0) ");
 	}
-	public static void appendSelectFields(StringBuilder sb,QueryDefination defination,List<QueryCondition> conditions){
+	public static void appendSelectFields(StringBuilder sb, QueryDefinition definition, List<QueryCondition> conditions){
 		sb.append(" select ");
-		List<ColumnDefination> columns=defination.getColumns();
-		if (columns==null||columns.size()==0) throw new NullPointerException("pageDefinetion->queryDefination->columns 中的列定义不能为空");
+		List<ColumnDefinition> columns=definition.getColumns();
+		if (columns==null||columns.size()==0) throw new NullPointerException("pageDefinetion->querydefinition->columns 中的列定义不能为空");
 		int index=0;
-		for (Iterator<ColumnDefination> iterator = columns.iterator(); iterator.hasNext();index++) {
-			ColumnDefination column = iterator.next();
+		for (Iterator<ColumnDefinition> iterator = columns.iterator(); iterator.hasNext(); index++) {
+			ColumnDefinition column = iterator.next();
 			if (column.getStaticColumnData()!=null) continue;
 			if (!StringUtils.isEmpty(column.getFromAlias())) sb.append(column.getFromAlias()).append('.');
 			sb.append(column.getField());
@@ -41,9 +41,9 @@ public class QueryHqlResolver {
 		}
 		sb.delete(sb.length()-2, sb.length());
 	}
-	public static void appendFrom(StringBuilder sb,QueryDefination defination,List<QueryCondition> conditions){
+	public static void appendFrom(StringBuilder sb, QueryDefinition definition, List<QueryCondition> conditions){
 		sb.append(" from ");// MenuEntity p join p.children as child 
-		List<MappedClassEntry> mappedClasses=defination.getMappedClass();
+		List<MappedClassEntry> mappedClasses=definition.getMappedClass();
 		for (Iterator<MappedClassEntry> iterator = mappedClasses.iterator(); iterator.hasNext();) {
 			MappedClassEntry e = iterator.next();
 			sb.append(e.getMappedClass().getName()).append(" ");
@@ -59,10 +59,10 @@ public class QueryHqlResolver {
 			if (iterator.hasNext()) sb.append(",");
 		}
 	}
-	public static  void appendWhere(StringBuilder sb,QueryDefination defination,List<QueryCondition> conditions){
+	public static  void appendWhere(StringBuilder sb, QueryDefinition definition, List<QueryCondition> conditions){
 		if (conditions==null||conditions.size()==0) return;
 		sb.append(" where 1=1 ");
-		if (!StringUtils.isEmpty(defination.getWhere())) sb.append("and ").append(defination.getWhere()).append(" ");
+		if (!StringUtils.isEmpty(definition.getWhere())) sb.append("and ").append(definition.getWhere()).append(" ");
 		for (QueryCondition condition : conditions) {
 			sb.append("and ");
 			if (!StringUtils.isEmpty(condition.getAlias())) sb.append(condition.getAlias()).append(".");
@@ -80,7 +80,7 @@ public class QueryHqlResolver {
 			sb.append(" ? ");
 		}
 	}
-	public static void appendSort(StringBuilder sb,QueryDefination defination,QueryConditions conditions){
+	public static void appendSort(StringBuilder sb, QueryDefinition definition, QueryConditions conditions){
 		List<SortEntry> sortEntries=conditions.getSortEntries();
 		if (sortEntries.size()==0) return;
 		sb.append("order by ");

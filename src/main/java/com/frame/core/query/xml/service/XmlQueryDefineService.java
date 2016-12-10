@@ -18,8 +18,8 @@ import com.frame.core.query.xml.DefaultDataFilter;
 import com.frame.core.query.xml.QueryCondition;
 import com.frame.core.query.xml.QueryConditions;
 import com.frame.core.query.xml.QueryHqlResolver;
-import com.frame.core.query.xml.defination.ColumnDefination;
-import com.frame.core.query.xml.defination.PageDefination;
+import com.frame.core.query.xml.definition.ColumnDefinition;
+import com.frame.core.query.xml.definition.PageDefinition;
 import com.frame.dao.GeneralDao;
 
 @Transactional
@@ -33,8 +33,8 @@ public class XmlQueryDefineService {
 	@Autowired
 	GeneralDao dao;
 	@SuppressWarnings("unchecked")
-	public Object list(PageDefination pageDefination,QueryConditions conditions){
-		String selectHql=QueryHqlResolver.generateSelect(pageDefination.getQueryDefination(), conditions);
+	public Object list(PageDefinition pageDefinition,QueryConditions conditions){
+		String selectHql=QueryHqlResolver.generateSelect(pageDefinition.getQueryDefinition(), conditions);
 		if (LOGGER.isInfoEnabled())
 			LOGGER.info("生成的查询HQL："+selectHql);
 		else System.out.println("生成的查询HQL："+selectHql);
@@ -52,10 +52,10 @@ public class XmlQueryDefineService {
 		List<String[]> list=new ArrayList<String[]>();
 		DataFilter defaultDataFilter=new DefaultDataFilter();
 		for (Map<String,Object> map : listMap) {
-			String[] stra=new String[pageDefination.getQueryDefination().getColumns().size()];
+			String[] stra=new String[pageDefinition.getQueryDefinition().getColumns().size()];
 			int j=0;
-			for (Iterator<ColumnDefination> iterator = pageDefination.getQueryDefination().getColumns().iterator(); iterator.hasNext();j++) {
-				ColumnDefination column = iterator.next();
+			for (Iterator<ColumnDefinition> iterator = pageDefinition.getQueryDefinition().getColumns().iterator(); iterator.hasNext(); j++) {
+				ColumnDefinition column = iterator.next();
 				if (column.getStaticColumnData()!=null) stra[j]=column.getStaticColumnData();
 				else if (column.getFilter()!=null){
 					try {
@@ -70,8 +70,8 @@ public class XmlQueryDefineService {
 		}
 		return list;
 	}
-	public int totalPageCount(PageDefination pageDefination,QueryConditions conditions){
-		String selectHql=QueryHqlResolver.generateCount(pageDefination.getQueryDefination(), conditions.getConditions());
+	public int totalPageCount(PageDefinition pageDefinition,QueryConditions conditions){
+		String selectHql=QueryHqlResolver.generateCount(pageDefinition.getQueryDefinition(), conditions.getConditions());
 		if (LOGGER.isInfoEnabled())
 			LOGGER.info("生成的计数HQL："+selectHql);
 		else System.out.println("生成的计数HQL："+selectHql);

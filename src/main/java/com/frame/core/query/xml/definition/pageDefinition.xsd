@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema id="pageDefination"
-           targetNamespace="http://dc.com/pageDefination"
-           xmlns="http://dc.com/pageDefination"
-           xmlns:mstns="http://dc.com/pageDefination"
+<xs:schema id="pageDefinition"
+           targetNamespace="http://dc.com/pageDefinition"
+           xmlns="http://dc.com/pageDefinition"
+           xmlns:mstns="http://dc.com/pageDefinition"
            attributeFormDefault="unqualified"
            elementFormDefault="qualified"
            xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:element name="pageDefination">
+  <xs:element name="pageDefinition">
     <xs:annotation>
       <xs:documentation>
         随便写写
@@ -14,7 +14,7 @@
     </xs:annotation>
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="queryDefination" minOccurs="1" maxOccurs="1">
+        <xs:element name="queryDefinition" minOccurs="1" maxOccurs="1">
           <xs:complexType>
             <xs:attribute name="showIndex"></xs:attribute>
             <xs:sequence minOccurs="1">
@@ -78,12 +78,12 @@
                           <xs:simpleType>
                             <xs:restriction base="xs:NMTOKEN">
                               <xs:enumeration value="!="/>
-                              <xs:enumeration value="<>"/>
+                              <xs:enumeration value="&lt;&gt;"/>
                               <xs:enumeration value="=="/>
-                              <xs:enumeration value="<"/>
-                              <xs:enumeration value=">"/>
-                              <xs:enumeration value="<="/>
-                              <xs:enumeration value=">="/>
+                              <xs:enumeration value="&lt;"/>
+                              <xs:enumeration value="&gt;"/>
+                              <xs:enumeration value="&lt;="/>
+                              <xs:enumeration value="&gt;="/>
                               <xs:enumeration value="LIKE"/>
                               <xs:enumeration value="BETWEEN"/>
                             </xs:restriction>
@@ -122,10 +122,10 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <!--<xs:complexType name="pageDefinationType">
-    <xs:element name="pageDefination">
+  <!--<xs:complexType name="pageDefinitionType">
+    <xs:element name="pageDefinition">
       <xs:complexType>
-        <xs:element name="queryDefination">
+        <xs:element name="queryDefinition">
           <xs:attribute name="showIndex" type="xs:string"></xs:attribute>
           <xs:sequence minOccurs="1">
             <xs:complexType name="mappedClass">

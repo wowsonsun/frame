@@ -6,11 +6,42 @@
 <script type="text/javascript" src="${ctx}/resources/js/common/common-list.js"></script>
 </head>
 <body>
+
+<#assign columns=pageDefination.queryDefination.columns/>
 <div class="query-panel">
+	<!--  <#--private String field;
+	private String alias;
+	private Class<?> type;
+	private Object value;
+	private String operator;
+	private int extra;
+	private boolean isParesed;
+	-->-->
+	<#assign showSubmit=false/>
+	<#list columns as c>
+		<#if c.operation??&&c.operation.length gt 0>
+			<#assign showSubmit=true/>
+			<#if c.operation=="BETWEEN">
+				<div class="col-full-line">
+				</div>
+				<#else/>
+				<div class="col-half">
+					<label class="form-label">${c.header}
+						<input />
+					</label>
+				</div>
+			</#if>
+		</#if>
+	</#list>
+	<#if showSubmit>
+		<div class="submitContainer button-group">
+			<div class="button-default" id="submitQuery">查询</div>
+			<div class="button-default" id="clearQuery">清空</div>
+		</div>
+	</#if>
 </div>
 <div class="data-panel">
-<#assign columns=pageDefination.queryDefination.columns/>
-<!--  <#--	private String header;
+	<!--  <#--	private String header;
 	private String field;
 	private String fromAlias;
 	private String width;
