@@ -48,6 +48,7 @@ public class XmlQueryDefineService {
 		Query query=dao.getSessionFactory().getCurrentSession().createQuery(selectHql); 
 		int i=0;
 		if (conditions.getConditions()!=null) for (QueryCondition condition : conditions.getConditions()) {
+			if (StringUtils.isEmpty(condition.getValue())) continue;
 			query.setParameter(i, condition.getValue());
 			i++;
 		}
@@ -81,13 +82,13 @@ public class XmlQueryDefineService {
 		if (LOGGER.isInfoEnabled())
 			LOGGER.info("生成的计数HQL："+selectHql);
 		else System.out.println("生成的计数HQL："+selectHql);
-		Object[] params=new Object[conditions.getConditions()==null?0:conditions.getConditions().size()];
-		int i=0;
-		if (conditions.getConditions()!=null) for (Iterator<QueryCondition> iterator = conditions.getConditions().iterator(); iterator.hasNext();i++) {
+		List<Object> params=new ArrayList<Object>();
+		if (conditions.getConditions()!=null) for (Iterator<QueryCondition> iterator = conditions.getConditions().iterator(); iterator.hasNext();) {
 			QueryCondition condition = iterator.next();
-			params[i]=condition.getValue();
+			if (StringUtils.isEmpty(condition.getValue())) continue;
+			params.add(condition.getValue());
 		}
-		long count=dao.getUnique(selectHql, params);
+		long count=dao.getUnique(selectHql, params.toArray());
 		int pageSize=conditions.getPageSize();
 		int totalPageCount=(int) ((count+pageSize-1)/pageSize);
 		if (totalPageCount<1) totalPageCount=1;

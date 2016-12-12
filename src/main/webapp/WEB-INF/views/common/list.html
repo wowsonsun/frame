@@ -7,7 +7,6 @@
 </head>
 <body>
 
-<#assign columns=pageDefinition.queryDefinition.columns/>
 <div class="query-panel">
 	<!--  <#--private String field;
 	private String alias;
@@ -16,22 +15,37 @@
 	private String operator;
 	private int extra;
 	private boolean isParesed;
+	 private String defaultValue="";
+    private String inputType="TEXT";
+    private String displayText;
+    private String inputId;
+    private String staticData;
+    private Object parsedData;
+    private String selectTextField;
+    private String selectValueField="id";
+    private Class<?> optionClass;
 	-->-->
-	<#assign showSubmit=false/>
-	<#list columns as c>
-		<#if c.operation??&&c.operation.length gt 0>
-			<#assign showSubmit=true/>
-			<#if c.operation=="BETWEEN">
-				<div class="col-full-line">
-				</div>
-				<#else/>
-				<div class="col-half">
-					<label class="form-label">${c.header}
-						<input />
-					</label>
-				</div>
-			</#if>
-		</#if>
+	<#assign conditions =queryConditions.conditions/>
+	<#assign showSubmit=conditions?size gt 0/>
+	<#list conditions as c>
+		<div class="col-half">
+			<label class="form-label">${c.displayText}
+				<#if c.inputType=="TEXT">
+					<#assign inputId=""/>
+					<#if c.inputId??>
+						<#assign inputId=c.inputId/>
+					</#if>
+					<input alias="${c.alias}" field="${c.field}" fieldType="${c.type.name}" operator="${c.operator}" ${inputId} type="text" value="${c.value!''}"/>
+					<#elseif c.inputType=="SELECT"/>
+					<select alias="${c.alias}" field="${c.field}" fieldType="${c.type.name}" operator="${c.operator}" ${inputId} type="text" >
+						<option value="" ${(c.value??||c.value?size == 0)?string('selected','')}>-- 请选择 --</option>
+						<#list c.parsedData as d>
+							<option value="${d.value}" ${(c.value == d.value?string)?string('selected','')}>${d.text}</option>
+						</#list>
+					</select>
+				</#if>
+			</label>
+		</div>
 	</#list>
 	<#if showSubmit>
 		<div class="submitContainer button-group">
@@ -50,6 +64,7 @@
 	private String staticColumnData;
 	private Class<?> filter;
 	private String callback;-->-->
+<#assign columns=pageDefinition.queryDefinition.columns/>
 <table  border="0" cellspacing="0" cellpadding="0">
 	<thead>
 		<tr>

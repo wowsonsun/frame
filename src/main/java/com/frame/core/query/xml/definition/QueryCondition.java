@@ -2,6 +2,7 @@ package com.frame.core.query.xml.definition;
 
 import com.frame.core.components.GsonFactory;
 import com.google.gson.Gson;
+import org.springframework.util.StringUtils;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
@@ -16,7 +17,8 @@ public class QueryCondition{
 	private boolean isParsed;
 	public QueryCondition parseValue(){
 		isParsed =true;
-		if (this.value!=null) this.value=gson.fromJson("'"+value+"'", type);
+		if (!StringUtils.isEmpty(this.value)) this.value=gson.fromJson("'"+value+"'", type);
+		else this.value=null;
 		return this;
 	}
 	public static void main(String[] args) {
@@ -71,6 +73,6 @@ public class QueryCondition{
 				(this.getAlias()==null||"".equals(this.getAlias()))&&(q.getAlias()==null||"".equals(q.getAlias()))
 						|| this.getAlias()!=null&& this.getAlias().equals(q.getAlias());
 		boolean isFieldEqual= this.getField().equals(q.getField());
-		return isAliasEqual&&isFieldEqual;
+		return isAliasEqual&&isFieldEqual&&this.getOperator().equals(q.getOperator());
 	}
 }

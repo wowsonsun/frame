@@ -6,7 +6,8 @@
 		var param={
 			page:$('#page').val(),
 			pageSize:$('#pageSize').val(),
-            sortEntries:[]
+            sortEntries:[],
+            conditions:[]
 		};
 		var $sortableTh=$('th[sortIndex]');
 		$sortableTh.each(function(){
@@ -17,6 +18,16 @@
 				index:$(this).attr("sortIndex")
 			});
 		});
+		var $conditions=$('.query-panel input,.query-panel select');
+        $conditions.each(function(){
+            param.conditions.push({
+                field:$(this).attr("field"),
+                alias:$(this).attr("alias"),
+                type:$(this).attr("fieldType"),
+                operator:$(this).attr("operator"),
+				value:$(this).val()
+            });
+        });
         param.sortEntries.sort(function(e1,e2){
         	return e1.index-e2.index;
 		});
@@ -68,4 +79,12 @@ $(document).ready(function(){
 		}
 		submitQuery();
 	});
+	$('#submitQuery').on('click',function(){
+        submitQuery();
+	});
+    $('div.query-panel').on("keydown",function(event){
+        if(event.keyCode == 13){
+            submitQuery();
+        }
+    });
 });

@@ -122,14 +122,13 @@
               <xs:restriction base="xs:NMTOKEN">
                 <xs:enumeration value="="></xs:enumeration>
                 <xs:enumeration value="LIKE"></xs:enumeration>
-                <xs:enumeration value="BETWEEN"></xs:enumeration>
+                <!--<xs:enumeration value="BETWEEN"></xs:enumeration>-->
                 <xs:enumeration value="&gt;"></xs:enumeration>
                 <xs:enumeration value="&lt;"></xs:enumeration>
                 <xs:enumeration value="&gt;="></xs:enumeration>
                 <xs:enumeration value="&lt;="></xs:enumeration>
                 <xs:enumeration value="!="></xs:enumeration>
                 <xs:enumeration value="&lt;&gt;"></xs:enumeration>
-
               </xs:restriction>
             </xs:simpleType>
           </xs:attribute>

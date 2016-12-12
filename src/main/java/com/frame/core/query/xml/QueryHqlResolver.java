@@ -64,6 +64,7 @@ public class QueryHqlResolver {
 		sb.append(" where 1=1 ");
 		if (!StringUtils.isEmpty(definition.getWhere())) sb.append("and ").append(definition.getWhere()).append(" ");
 		for (QueryCondition condition : conditions) {
+			if (StringUtils.isEmpty(condition.getValue())) continue;
 			sb.append("and ");
 			if (!StringUtils.isEmpty(condition.getAlias())) sb.append(condition.getAlias()).append(".");
 			sb.append(condition.getField()).append(" ");
