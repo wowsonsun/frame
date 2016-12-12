@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <link rel="stylesheet" href="${ctx}/resources/css/common/common-list.css"/>
 <script type="text/javascript" src="${ctx}/resources/js/common/common-list.js"></script>
+<script type="text/javascript" src="${ctx}/resources/js/datePicker/WdatePicker.js"></script>
 </head>
 <body>
 
@@ -35,14 +36,16 @@
 					<#if c.inputId??>
 						<#assign inputId=c.inputId/>
 					</#if>
-					<input alias="${c.alias}" field="${c.field}" fieldType="${c.type.name}" operator="${c.operator}" ${inputId} type="text" value="${c.value!''}"/>
+					<input class="form-control" alias="${c.alias}" field="${c.field}" fieldType="${c.type.name}" operator="${c.operator}" ${inputId} type="text" value="${c.value!''}"/>
 					<#elseif c.inputType=="SELECT"/>
-					<select alias="${c.alias}" field="${c.field}" fieldType="${c.type.name}" operator="${c.operator}" ${inputId} type="text" >
+					<select class="form-control" alias="${c.alias}" field="${c.field}" fieldType="${c.type.name}" operator="${c.operator}" ${inputId} type="text" >
 						<option value="" ${(c.value??||c.value?size == 0)?string('selected','')}>-- 请选择 --</option>
 						<#list c.parsedData as d>
 							<option value="${d.value}" ${(c.value == d.value?string)?string('selected','')}>${d.text}</option>
 						</#list>
 					</select>
+					<#elseif c.inputType=="DATEBOX"/>
+					<input class="form-control datebox" alias="${c.alias}" field="${c.field}" fieldType="${c.type.name}" operator="${c.operator}" ${inputId} type="text" value="${c.value!''}"/>
 				</#if>
 			</label>
 		</div>

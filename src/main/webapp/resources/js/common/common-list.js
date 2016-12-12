@@ -87,4 +87,8 @@ $(document).ready(function(){
             submitQuery();
         }
     });
+    $('.datebox').addClass("Wdate");
+    $('.datebox').on("focus",function(){
+    	WdatePicker(this);
+	})
 });

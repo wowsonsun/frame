@@ -138,6 +138,7 @@
               <xs:restriction base="xs:NMTOKEN">
                 <xs:enumeration value="TEXT"/>
                 <xs:enumeration value="SELECT"/>
+                <xs:enumeration value="DATEBOX"/>
               </xs:restriction>
             </xs:simpleType>
           </xs:attribute>

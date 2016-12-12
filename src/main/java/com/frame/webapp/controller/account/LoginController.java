@@ -1,5 +1,6 @@
 package com.frame.webapp.controller.account;
 
+import com.frame.core.components.UserAuthoritySubject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,10 @@ public class LoginController extends BaseController{
 	@RequestMapping("/login")
 	public Object login(String userLoginVerification,String userPassword){
 		if(userService.login(userLoginVerification, userPassword)==0){
+			String redirectFor;
+			if ((redirectFor= (String) UserAuthoritySubject.getSession().getAttribute(GeneralIntercepter.REQUEST_URI_BEFORE_LOGIN_THREAD_KEY))!=null){
+				return redirectFor;
+			}
 			return "redirect:/main";
 		}else{
 			return new ModelAndView("account/login").addObject("userLoginVerification", userLoginVerification).addObject("message", userLoginVerification==null?"":"1");
