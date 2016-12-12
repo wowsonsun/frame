@@ -22,24 +22,28 @@ public class PageDefinitionHolder {
 		private static final long serialVersionUID = 4989620748698016255L;
 		public PageDefinitionLoadException(Throwable t){super(t);}
 	}
-	PageDefinition page;
-	String fileName;
-	Class<?> loader;
-	long lastModified=0L;
-	
+	private PageDefinition page;
+	private String fileName;
+	private Class<?> loader;
+	private long lastModified=0L;
+	private JAXBContext context;
+	private Unmarshaller unmarshaller;
 	public PageDefinitionHolder(String fileName, Class<?> loader){
 		this.fileName=fileName;
 		this.loader=loader;
+		try {
+			context = JAXBContext.newInstance(PageDefinition.class);
+			unmarshaller = context.createUnmarshaller();
+		} catch (JAXBException e) {
+			throw new PageDefinitionLoadException(e);
+		}
 		refresh();
 	}
 	public void refresh(){
-		JAXBContext context;
 		try {
 			LOGGER.info("Load pageDefinition: "+fileName+",use class "+loader);
 			Resource resource= new ClassPathResource(fileName, loader);
 			if ("file".equals(resource.getURL().getProtocol())) lastModified = resource.getFile().lastModified();
-			context = JAXBContext.newInstance(PageDefinition.class);
-			Unmarshaller unmarshaller = context.createUnmarshaller();
 			page = (PageDefinition) unmarshaller.unmarshal(resource.getInputStream());
 		} catch (JAXBException | IOException e) {
 			throw new PageDefinitionLoadException(e);
@@ -67,8 +71,6 @@ public class PageDefinitionHolder {
 				return;
 			}
 			LOGGER.info("pageDefinition out of date reload pageDefinition: "+fileName+",use class "+loader);
-			context = JAXBContext.newInstance(PageDefinition.class);
-			Unmarshaller unmarshaller = context.createUnmarshaller();
 			page = (PageDefinition) unmarshaller.unmarshal(resource.getInputStream());
 		} catch (JAXBException | IOException e) {
 			throw new PageDefinitionLoadException(e);

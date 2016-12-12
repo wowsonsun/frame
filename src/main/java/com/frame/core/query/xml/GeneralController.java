@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.frame.core.query.xml.definition.ColumnDefinition;
+import com.frame.core.query.xml.definition.QueryConditions;
 import com.frame.core.query.xml.definition.QueryDefinition;
 import com.frame.core.query.xml.definition.SortEntry;
 import org.slf4j.Logger;
@@ -53,7 +54,7 @@ public abstract class GeneralController {
 		mv.addObject("totalPageCount", service.totalPageCount(pageHolder.getPageDefinition(), queryConditions));
 		mv.addObject("pageList",list);
 		mv.addObject("pageDefinition", pageHolder.getPageDefinition());
-		mv.addObject("queryConditions", queryConditions);
+		mv.addObject("queryConditions", service.prepareQueryCondition(queryConditions,pageHolder.getPageDefinition().getQueryDefinition()));
 		mv.addObject("mergedSort",mergeSortCondition(pageHolder.getPageDefinition().getQueryDefinition().getColumns(),queryConditions.getSortEntries()));
 		List<NavigationOption> options=new ArrayList<NavigationOption>();
 		options.add(new NavigationOption("添加", "void(0)"));
@@ -62,10 +63,6 @@ public abstract class GeneralController {
 		ThreadBinder.set(AuthorityService.NAVIGATION_OPTIONS_KEY,options);
 		return mv;
 	}
-	//TODO
-	private void mergeQuery(QueryDefinition queryDefinition, QueryConditions queryConditions){
-
-    }
 	private String[] mergeSortCondition(List<ColumnDefinition> columnDefinitions, List<SortEntry> sortEntries){
 		String[] mergedSort=new String[columnDefinitions.size()];
 		int index=0;

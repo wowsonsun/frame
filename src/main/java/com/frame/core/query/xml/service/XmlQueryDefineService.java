@@ -1,10 +1,15 @@
 package com.frame.core.query.xml.service;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.frame.core.components.BaseEntity;
+import com.frame.core.query.xml.definition.*;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.hibernate.Query;
 import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
@@ -15,12 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.frame.core.query.xml.DataFilter;
 import com.frame.core.query.xml.DefaultDataFilter;
-import com.frame.core.query.xml.QueryCondition;
-import com.frame.core.query.xml.QueryConditions;
 import com.frame.core.query.xml.QueryHqlResolver;
-import com.frame.core.query.xml.definition.ColumnDefinition;
-import com.frame.core.query.xml.definition.PageDefinition;
 import com.frame.dao.GeneralDao;
+import org.springframework.util.StringUtils;
 
 @Transactional
 @Service
@@ -30,6 +32,11 @@ public class XmlQueryDefineService {
 		private static final long serialVersionUID = 1L;
 		public DataSetTransferException(Throwable t){super(t);}
 	}
+	public static class QueryConditionParseException extends RuntimeException{
+		private static final long serialVersionUID = 1L;
+		public QueryConditionParseException(String message){super(message);}
+	}
+	private DataFilter defaultDataFilter=new DefaultDataFilter();
 	@Autowired
 	GeneralDao dao;
 	@SuppressWarnings("unchecked")
@@ -50,7 +57,6 @@ public class XmlQueryDefineService {
 		//分页
 		List<Map<String,Object>> listMap=query.list();
 		List<String[]> list=new ArrayList<String[]>();
-		DataFilter defaultDataFilter=new DefaultDataFilter();
 		for (Map<String,Object> map : listMap) {
 			String[] stra=new String[pageDefinition.getQueryDefinition().getColumns().size()];
 			int j=0;
@@ -87,9 +93,71 @@ public class XmlQueryDefineService {
 		if (totalPageCount<1) totalPageCount=1;
 		return totalPageCount;
 	}
+	@Autowired
+	public Gson gson;
+	/**
+	 * TODO
+	 * 1.设置值
+	 * 2.找到类型放进去
+	 * 3.如果类型为SELECT 的话要初始化要选择的数据
+	 * @param queryConditions
+	 * @param queryDefinition
+	 * @return
+	 */
+	public QueryConditions prepareQueryCondition(QueryConditions queryConditions,QueryDefinition queryDefinition){
+		List<QueryConditionDefine> res=queryDefinition.getQueryConditionDefines();
+		for(QueryConditionDefine q : res){
+			if (queryConditions.getConditions()!=null) for (QueryCondition q2:queryConditions.getConditions()){
+				if (q.equalsField(q2)){
+					q.setValue(defaultDataFilter.filt(q2.getValue()));
+					break;
+				}
+			}
+			if (q.getValue()==null) q.setValue(q.getDefaultValue());
+			Class<?> type=null;
+			for (MappedClassEntry mappedClass:queryDefinition.getMappedClass()){
+				if (StringUtils.isEmpty(mappedClass.getAlias())&&StringUtils.isEmpty(q.getAlias())||mappedClass.getAlias()!=null&&mappedClass.getAlias().equals(q.getAlias())){
+					try {
+						type=resolveFieldClass(mappedClass.getMappedClass(),q.getField());
+						break;
+					} catch (NoSuchMethodException e) {
+					}
+				}
+				if (mappedClass.getJoin()!=null) for (JoinEntry joinEntry:mappedClass.getJoin()){
+					if (StringUtils.isEmpty(joinEntry.getAs())&&StringUtils.isEmpty(q.getAlias())||joinEntry.getAs()!=null&&joinEntry.getAs().equals(q.getAlias())){
+						try {
+							Class<?> optionClass=resolveFieldClass(mappedClass.getMappedClass(),joinEntry.getField());
+							if (q.getOptionClass()==null) q.setOptionClass(optionClass);
+							type=resolveFieldClass(optionClass,q.getField());
+							break;
+						} catch (NoSuchMethodException e) {
+						}
+					}
+				}
+				if (type!=null) break;
+			}
+			if (type!=null) q.setType(type);
+			else throw new QueryConditionParseException("No such field found in queryDedination! alias:"+q.getAlias()+" field:"+q.getField());
+			if ("SELECT".equals(q.getInputType())){
+				if (!StringUtils.isEmpty(q.getStaticData())){
+					q.setParsedData(gson.fromJson(q.getStaticData(),new TypeToken<List<Map<String,String>>>(){}.getType()));
+				}else{
+					if (q.getOptionClass()!=null&&BaseEntity.class.isAssignableFrom(q.getOptionClass())){
+						List<?> list= dao.findMap("select "+q.getSelectTextField()+" as text,"+q.getSelectValueField() +" as value from "+q.getOptionClass().getName()+" ");
+						q.setParsedData(list);
+					}else throw new QueryConditionParseException("Select option data parse Exception.No static data found nor optionClass found.");
+				}
+			}
+		}
+		queryConditions.setConditions(new ArrayList<QueryCondition>(res));
+		return queryConditions;
+	}
+	private static Class<?> resolveFieldClass(Class<?> cls,String field) throws NoSuchMethodException {
+		String methodName="get"+Character.toUpperCase(field.charAt(0))+field.substring(1);
+		Method method=cls.getMethod(methodName);
+		return method.getReturnType();
+	}
 	public static void main(String[] args) {
-		long count=21L;
-		int pageSize=20;
-		System.out.println((int) ((count+pageSize-1)/pageSize));
+		System.out.println(List.class.isAssignableFrom(ArrayList.class));
 	}
 }

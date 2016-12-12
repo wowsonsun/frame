@@ -64,16 +64,19 @@ ul{
 }
 div#bg {
     position: fixed;
-    height: 1080px;
+    height: 100%;
     width: 100%;
     background-repeat: no-repeat;
     background-position-x: center;
     z-index: -1000;
+    background-size: cover;
+    -webkit-background-size: cover;
+    -o-background-size: cover;
     /* filter:blur(2px); */
 }
 div#bgCover {
     position: fixed;
-    height: 1080px;
+    height: 100%;
     width: 100%;
     z-index: -999;
     /* background-color: #252626; */
