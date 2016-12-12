@@ -7,7 +7,7 @@
 </head>
 <body>
 
-<#assign columns=pageDefination.queryDefination.columns/>
+<#assign columns=pageDefinition.queryDefinition.columns/>
 <div class="query-panel">
 	<!--  <#--private String field;
 	private String alias;
@@ -53,8 +53,8 @@
 <table  border="0" cellspacing="0" cellpadding="0">
 	<thead>
 		<tr>
-			<#if pageDefination.queryDefination.showIndex??>
-			<th >${pageDefination.queryDefination.showIndex}</th>
+			<#if pageDefinition.queryDefinition.showIndex??>
+			<th >${pageDefinition.queryDefinition.showIndex}</th>
 			</#if>
 			<#list columns as column>
 			<th field="${column.field}" fromAlias="${column.fromAlias}" ${(column.hidden)?string("hidden",(column.width??)?string("style=\"width:"+column.width+";\"",""))} ${column.sortable?string("sortable","")} ${mergedSort[column_index]}>${column.header!''}</th>
@@ -63,7 +63,7 @@
 	<tbody>
 		<#list pageList as strarr>
 		<tr>
-			<#if pageDefination.queryDefination.showIndex??>
+			<#if pageDefinition.queryDefinition.showIndex??>
 			<td>${strarr_index+1}</td>
 			</#if>
 			<#list strarr as str>

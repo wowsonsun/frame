@@ -5,7 +5,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(namespace = "http://dc.com/pageDefinition")
+@XmlRootElement()
 public class PageDefinition {
 	public static class SaveOrUpdate{
 		

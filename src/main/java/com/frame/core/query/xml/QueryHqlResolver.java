@@ -51,8 +51,8 @@ public class QueryHqlResolver {
 			List<JoinEntry> joins=e.getJoin();
 			if (joins!=null&&joins.size()!=0) for (JoinEntry joinEntry : joins) {
 				if (!StringUtils.isEmpty(joinEntry.getType())) sb.append(joinEntry.getType()).append(" ");
-				sb.append(" join ");
-				if (!StringUtils.isEmpty(joinEntry.getFromAlias())) sb.append(joinEntry.getFromAlias()).append(".");
+				sb.append("join ");
+				if (!StringUtils.isEmpty(e.getAlias())) sb.append(e.getAlias()).append(".");
 				sb.append(joinEntry.getField()).append(" ");
 				if (!StringUtils.isEmpty(joinEntry.getAs())) sb.append(" as ").append(joinEntry.getAs()).append(" ");
 			}
@@ -67,16 +67,7 @@ public class QueryHqlResolver {
 			sb.append("and ");
 			if (!StringUtils.isEmpty(condition.getAlias())) sb.append(condition.getAlias()).append(".");
 			sb.append(condition.getField()).append(" ");
-			if (condition.getOperator()==null){
-				Class<?> type=condition.getType();
-				if (String.class.isAssignableFrom(type)){
-					sb.append("like");
-				}else{
-					sb.append("=");
-				} 
-			}else{
-				sb.append(condition.getOperator());
-			}
+			sb.append(condition.getOperator()==null?"=":condition.getOperator());
 			sb.append(" ? ");
 		}
 	}

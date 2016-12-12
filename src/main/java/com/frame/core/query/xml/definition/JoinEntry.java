@@ -5,7 +5,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 public class JoinEntry {
 	private String type;
 	private String field;
-	private String fromAlias;
 	private String as;
 	public JoinEntry(){}
 	
@@ -36,13 +35,5 @@ public class JoinEntry {
 
 	public void setType(String type) {
 		this.type = type;
-	}
-	@XmlAttribute
-	public String getFromAlias() {
-		return fromAlias;
-	}
-
-	public void setFromAlias(String fromAlias) {
-		this.fromAlias = fromAlias;
 	}
 }

@@ -14,6 +14,7 @@ public class QueryDefinition {
 	private String showIndex;
 	private List<ColumnDefinition> columns;
 	private int pageSize=10;
+	private List<QueryConditionDefine> queryConditionDefines;
 	public List<MappedClassEntry> getMappedClass() {
 		return mappedClass;
 	}
@@ -73,4 +74,13 @@ public class QueryDefinition {
 	public void setRequiredCssPath(List<String> requiredCssPath) {
 		this.requiredCssPath = requiredCssPath;
 	}
+	@XmlElement(name="condition")
+	@XmlElementWrapper(name="searchDefinition")
+	public List<QueryConditionDefine> getQueryConditionDefines() {
+		return queryConditionDefines;
+	}
+	public void setQueryConditionDefines(List<QueryConditionDefine> queryConditionDefines) {
+		this.queryConditionDefines = queryConditionDefines;
+	}
+
 }
