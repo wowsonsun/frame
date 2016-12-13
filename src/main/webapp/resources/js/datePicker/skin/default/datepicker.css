@@ -4,11 +4,10 @@
 
 .WdateDiv{
 	width:180px;
-	background-color:#FFFFFF;
+	background-color:#fff;
 	border:#bbb 1px solid;
 	padding:2px;
 }
-
 .WdateDiv2{
 	width:360px;
 }
@@ -113,11 +112,11 @@
  .WdateDiv .Wweek {
  	text-align:center;
 	background:#DAF3F5;
-	border-right:#BDEBEE 1px solid;
+	border-right:#9c9c9c 1px solid;
  }
 
 .WdateDiv .MTitle{
-	background-color:#BDEBEE;
+	background-color:#9c9c9c;
 }
 .WdateDiv .WdayTable2{
 	border-collapse:collapse;
@@ -137,11 +136,12 @@
 
 .WdateDiv .Wday{
 	cursor:pointer;
+	/*color:#fff;*/
 }
 
 .WdateDiv .WdayOn{
 	cursor:pointer;
-	background-color:#C0EBEF;
+	background-color:#9c9c9c;
 }
 
 .WdateDiv .Wwday{
@@ -159,7 +159,7 @@
 	color:blue;
 }
 .WdateDiv .Wselday{
-	background-color:#A9E4E9;
+	background-color:#8c8c8c;
 }
 .WdateDiv .WspecialDay{
 	background-color:#66F4DF;

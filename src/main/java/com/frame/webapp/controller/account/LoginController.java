@@ -21,7 +21,7 @@ public class LoginController extends BaseController{
 		if(userService.login(userLoginVerification, userPassword)==0){
 			String redirectFor;
 			if ((redirectFor= (String) UserAuthoritySubject.getSession().getAttribute(GeneralIntercepter.REQUEST_URI_BEFORE_LOGIN_THREAD_KEY))!=null){
-				return redirectFor;
+				return "redirect:"+redirectFor;
 			}
 			return "redirect:/main";
 		}else{

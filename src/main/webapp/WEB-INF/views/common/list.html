@@ -9,49 +9,31 @@
 <body>
 
 <div class="query-panel">
-	<!--  <#--private String field;
-	private String alias;
-	private Class<?> type;
-	private Object value;
-	private String operator;
-	private int extra;
-	private boolean isParesed;
-	 private String defaultValue="";
-    private String inputType="TEXT";
-    private String displayText;
-    private String inputId;
-    private String staticData;
-    private Object parsedData;
-    private String selectTextField;
-    private String selectValueField="id";
-    private Class<?> optionClass;
-	-->-->
 	<#assign conditions =queryConditions.conditions/>
 	<#assign showSubmit=conditions?size gt 0/>
 	<#list conditions as c>
 		<div class="col-half">
-			<label class="form-label">${c.displayText}
-				<#if c.inputType=="TEXT">
-					<#assign inputId=""/>
-					<#if c.inputId??>
-						<#assign inputId=c.inputId/>
-					</#if>
-					<input class="form-control" alias="${c.alias}" field="${c.field}" fieldType="${c.type.name}" operator="${c.operator}" ${inputId} type="text" value="${c.value!''}"/>
-					<#elseif c.inputType=="SELECT"/>
-					<select class="form-control" alias="${c.alias}" field="${c.field}" fieldType="${c.type.name}" operator="${c.operator}" ${inputId} type="text" >
-						<option value="" ${(c.value??||c.value?size == 0)?string('selected','')}>-- 请选择 --</option>
-						<#list c.parsedData as d>
-							<option value="${d.value}" ${(c.value == d.value?string)?string('selected','')}>${d.text}</option>
-						</#list>
-					</select>
-					<#elseif c.inputType=="DATEBOX"/>
-					<input class="form-control datebox" alias="${c.alias}" field="${c.field}" fieldType="${c.type.name}" operator="${c.operator}" ${inputId} type="text" value="${c.value!''}"/>
+			<label class="form-label">${c.displayText}</label>
+			<#if c.inputType=="TEXT">
+				<#assign inputId=""/>
+				<#if c.inputId??>
+					<#assign inputId=c.inputId/>
 				</#if>
-			</label>
+				<input class="form-control" alias="${c.alias}" field="${c.field}" fieldType="${c.type.name}" operator="${c.operator}" ${inputId} type="text" value="${c.value!''}"/>
+				<#elseif c.inputType=="SELECT"/>
+				<select class="form-control" alias="${c.alias}" field="${c.field}" fieldType="${c.type.name}" operator="${c.operator}" ${inputId} type="text" >
+					<option value="" ${(c.value??||c.value?size == 0)?string('selected','')}>-- 请选择 --</option>
+					<#list c.parsedData as d>
+						<option value="${d.value}" ${(c.value == d.value?string)?string('selected','')}>${d.text}</option>
+					</#list>
+				</select>
+				<#elseif c.inputType=="DATEBOX"/>
+				<input class="form-control datebox" alias="${c.alias}" field="${c.field}" fieldType="${c.type.name}" operator="${c.operator}" ${inputId} type="text" value="${c.value!''}"/>
+			</#if>
 		</div>
 	</#list>
 	<#if showSubmit>
-		<div class="submitContainer button-group">
+		<div class="submit-container button-group align-right">
 			<div class="button-default" id="submitQuery">查询</div>
 			<div class="button-default" id="clearQuery">清空</div>
 		</div>

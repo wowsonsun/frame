@@ -82,6 +82,10 @@ $(document).ready(function(){
 	$('#submitQuery').on('click',function(){
         submitQuery();
 	});
+	$("#clearQuery").on("click",function(){
+		$(".query-panel input,.query-panel select").val("");
+        submitQuery();
+	});
     $('div.query-panel').on("keydown",function(event){
         if(event.keyCode == 13){
             submitQuery();
