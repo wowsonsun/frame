@@ -39,7 +39,7 @@
 
 	<!-- 启动Spring MVC的注解功能，完成请求和注解POJO的映射 -->
 	<bean
-		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
 		<property name="messageConverters">
 			<list>
 				<ref bean="gsonHttpMessageConverter" /><!-- json转换器 -->
@@ -124,5 +124,6 @@
 	        定义在mvc:interceptor下面的表示是对特定的请求才进行拦截的  
 	        <bean class="com.host.app.web.interceptor.LoginInterceptor"/>  
 	    </mvc:interceptor>   -->
-	</mvc:interceptors>  
+	</mvc:interceptors>
+	<bean class="com.frame.service.StartupListener"></bean>
 </beans>

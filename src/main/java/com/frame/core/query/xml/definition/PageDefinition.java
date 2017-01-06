@@ -7,10 +7,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement()
 public class PageDefinition {
-	public static class SaveOrUpdate{
-		
+	public Delete getDelete() {
+		return delete;
 	}
-	public static class Delete{
+
+	public void setDelete(Delete delete) {
+		this.delete = delete;
+	}
+
+	public static class SaveOrUpdate{
 		
 	}
 	private QueryDefinition queryDefinition;

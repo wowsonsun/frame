@@ -31,12 +31,23 @@
 	    var basePath = local.protocol+"//"+local.host/*+":"+local.port*/+"/"+contextPath;
 	    return basePath;
 	})();
+	window.escapeHTML=function(str){
+		return $("div").text(str).html();
+	};
+    window.unescapeHTML=function(str){
+        return $("div").html(str).text();
+    };
 	window.submitParams=function(url,method,data){
 		var form='<form id="{id}" action="{url}" method="{method}">{inputs}</form>';
 		if (method=="get"||method=="GET"||method=="Get")
-			for(e in data){
+			for(var e in data){
 				data[e]=encodeURIComponent(data[e]);
 			}
+		else{
+            for(var e in data){
+                data[e]=data[e].replace(/"/g,"&quot;");
+            }
+		}
 		var inputsTemplate="<input type=\"hidden\" name=\"{name}\" value=\"{value}\"/>";
 		var inputs="";
 		if (!!data) for(e in data){
@@ -44,7 +55,7 @@
 		}
 		var id=encrypt(new Date());
 		form=form.format({id:id,url:url,method:method,inputs:inputs});
-		document.body.innerHTML+=(form);
+		document.body.innerHTML=(form)+document.body.innerHTML;
 		document.getElementById(id).submit();
 	};
 	$.ajaxSetup({
@@ -55,7 +66,16 @@
 	            // 如果超时就处理 ，指定要跳转的页面
 	            window.location.href=ctx+"/login";
 	        }
-	    }
-	}); 
+        },error:function(xhr, status, e){
+			console.error("ajax请求出现异常:",xhr);
+			console.error("status:",status);
+			console.error(e);
+			if (xhr.status==500){
+				console.error(JSON.parse(xhr.responseText));
+			}
+			frame.toastError("操作失败，F12查看错误信息。");
+		}
+	});
+
 })();
 

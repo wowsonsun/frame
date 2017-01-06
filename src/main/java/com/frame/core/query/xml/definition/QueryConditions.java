@@ -22,7 +22,6 @@ public class QueryConditions {
 	private int pageSize=10;
 	private List<SortEntry> sortEntries=new ArrayList<SortEntry>();
 
-
 	public QueryConditions parseFromParamString(){
 		if (paramString!=null){
 			if (((HttpServletRequest)ThreadBinder.get(ThreadBinder.REQUEST)).getMethod().equalsIgnoreCase("get"))try {

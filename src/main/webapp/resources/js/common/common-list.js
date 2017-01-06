@@ -31,8 +31,21 @@
         param.sortEntries.sort(function(e1,e2){
         	return e1.index-e2.index;
 		});
-		submitParams("","GET",{paramString:JSON.stringify(param)});
-	}
+		submitParams("","POST",{paramString:JSON.stringify(param)});
+	};
+	window.deleteRow=function(){
+		var selectedId=$(".data-panel>table>tbody>tr.selected").attr("id");
+		//TODO 封装？
+		if (!!selectedId){
+			$.ajax("delete",{
+				data:{id:selectedId},
+				method:"POST",
+				success:function(data){
+					frame.toast("操作成功！(点击刷新)",function(){submitQuery();});
+				}
+			});
+		}
+	};
 })();
 $(document).ready(function(){
 	$('.data-panel>table').on("click","tbody>tr",function(e){

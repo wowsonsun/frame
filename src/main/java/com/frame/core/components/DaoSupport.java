@@ -35,10 +35,18 @@ public abstract class DaoSupport extends HibernateDaoSupport {
 	}
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public List<Map<String,Object>> findMap(String hql, Object... params){
-		Query query = this.getSessionFactory().getCurrentSession().createQuery(hql);for (int i=0;i<params.length;i++) {
+		Query query = this.getSessionFactory().getCurrentSession().createQuery(hql);
+		for (int i=0;i<params.length;i++) {
 			query.setParameter(i, params[i]);
 		}
 		List<Map<String,Object>> list =query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
 		return list;
+	}
+	public int executeHql(String hql,Object... params){
+		Query query = this.getSessionFactory().getCurrentSession().createQuery(hql);
+		for (int i=0;i<params.length;i++) {
+			query.setParameter(i, params[i]);
+		}
+		return query.executeUpdate();
 	}
 }

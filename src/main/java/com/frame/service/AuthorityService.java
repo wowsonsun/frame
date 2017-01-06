@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,8 +29,10 @@ public class AuthorityService {
 		List<MenuEntity> resList=new ArrayList<MenuEntity>();
 		for (MenuEntity menuEntity : list) {
 			//TODO 如果含有权限
-			menuEntity.setChildren(filtMenu(menuEntity.getChildren()));
-			resList.add(menuEntity);
+			MenuEntity menuCopy=new MenuEntity();
+			BeanUtils.copyProperties(menuEntity,menuCopy,"children","parent");
+			menuCopy.setChildren(filtMenu(menuEntity.getChildren()));
+			resList.add(menuCopy);
 		}
 		return resList;
 	}

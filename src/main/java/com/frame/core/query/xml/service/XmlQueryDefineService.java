@@ -59,7 +59,8 @@ public class XmlQueryDefineService {
 		List<Map<String,Object>> listMap=query.list();
 		List<String[]> list=new ArrayList<String[]>();
 		for (Map<String,Object> map : listMap) {
-			String[] stra=new String[pageDefinition.getQueryDefinition().getColumns().size()];
+			String[] stra=new String[pageDefinition.getQueryDefinition().getColumns().size()+1];
+			stra[0]=map.get("id").toString();
 			int j=0;
 			for (Iterator<ColumnDefinition> iterator = pageDefinition.getQueryDefinition().getColumns().iterator(); iterator.hasNext(); j++) {
 				ColumnDefinition column = iterator.next();
@@ -67,11 +68,11 @@ public class XmlQueryDefineService {
 				else if (column.getFilter()!=null){
 					try {
 						DataFilter f=(DataFilter) column.getFilter().newInstance();
-						stra[j]=f.filt(map.get("col_"+j));
+						stra[j+1]=f.filt(map.get("col_"+j));
 					} catch (Exception e) {
 						throw new DataSetTransferException(e);
 					}
-				}else stra[j]=defaultDataFilter.filt(map.get("col_"+j));
+				}else stra[j+1]=defaultDataFilter.filt(map.get("col_"+j));
 			}
 			list.add(stra);
 		}
@@ -122,6 +123,7 @@ public class XmlQueryDefineService {
 						type=resolveFieldClass(mappedClass.getMappedClass(),q.getField());
 						break;
 					} catch (NoSuchMethodException e) {
+						throw new DataSetTransferException(e);
 					}
 				}
 				if (mappedClass.getJoin()!=null) for (JoinEntry joinEntry:mappedClass.getJoin()){
@@ -132,6 +134,7 @@ public class XmlQueryDefineService {
 							type=resolveFieldClass(optionClass,q.getField());
 							break;
 						} catch (NoSuchMethodException e) {
+							throw new DataSetTransferException(e);
 						}
 					}
 				}
@@ -157,6 +160,9 @@ public class XmlQueryDefineService {
 		String methodName="get"+Character.toUpperCase(field.charAt(0))+field.substring(1);
 		Method method=cls.getMethod(methodName);
 		return method.getReturnType();
+	}
+	public void delete(Long id,Class<?> cls){
+		dao.executeHql("delete from "+cls.getName()+" where id=?",id);
 	}
 	public static void main(String[] args) {
 		System.out.println(List.class.isAssignableFrom(ArrayList.class));

@@ -27,9 +27,13 @@ public class QueryHqlResolver {
 		sb.append("select count(0) ");
 	}
 	public static void appendSelectFields(StringBuilder sb, QueryDefinition definition, List<QueryCondition> conditions){
-		sb.append(" select ");
 		List<ColumnDefinition> columns=definition.getColumns();
 		if (columns==null||columns.size()==0) throw new NullPointerException("pageDefinetion->querydefinition->columns 中的列定义不能为空");
+		if (definition.getMappedClass().size()==0) throw new NullPointerException("pageDefinetion->querydefinition->mappedClass 中的实体定义不能为空");
+		sb.append(" select ");
+		MappedClassEntry coreEntry=definition.getMappedClass().get(0);
+		if (!StringUtils.isEmpty(coreEntry.getAlias())) sb.append(coreEntry.getAlias()).append('.');
+		sb.append("id as id, ");
 		int index=0;
 		for (Iterator<ColumnDefinition> iterator = columns.iterator(); iterator.hasNext(); index++) {
 			ColumnDefinition column = iterator.next();

@@ -3,8 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <link rel="stylesheet" href="${ctx}/resources/css/common/common-list.css"/>
+<#if pageDefinition.queryDefinition.requiredCssPath??><#list pageDefinition.queryDefinition.requiredCssPath as path>
+<link rel="stylesheet" href="${ctx}${path}"/>
+</#list></#if>
 <script type="text/javascript" src="${ctx}/resources/js/common/common-list.js"></script>
 <script type="text/javascript" src="${ctx}/resources/js/datePicker/WdatePicker.js"></script>
+<#if pageDefinition.queryDefinition.requiredJsPath??><#list pageDefinition.queryDefinition.requiredJsPath as path>
+<script type="text/javascript" src="${ctx}${path}"></script>
+</#list></#if>
 </head>
 <body>
 
@@ -14,21 +20,23 @@
 	<#list conditions as c>
 		<div class="col-half">
 			<label class="form-label">${c.displayText}</label>
+			<#assign inputId=""/>
+			<#if c.inputId??>
+				<#assign inputId=c.inputId/>
+			</#if>
 			<#if c.inputType=="TEXT">
-				<#assign inputId=""/>
-				<#if c.inputId??>
-					<#assign inputId=c.inputId/>
-				</#if>
-				<input class="form-control" alias="${c.alias}" field="${c.field}" fieldType="${c.type.name}" operator="${c.operator}" ${inputId} type="text" value="${c.value!''}"/>
+				<input class="form-control" alias="${c.alias}" field="${c.field}" fieldType="${c.type.name}" operator="${c.operator}" id="${inputId}" type="text" value="${c.value!''}"/>
+				<#elseif c.inputType=="NUMBER"/>
+				<input class="form-control"  alias="${c.alias}" field="${c.field}" fieldType="${c.type.name}" operator="${c.operator}" id="${inputId}" type="number" value="${c.value!''}"/>
 				<#elseif c.inputType=="SELECT"/>
-				<select class="form-control" alias="${c.alias}" field="${c.field}" fieldType="${c.type.name}" operator="${c.operator}" ${inputId} type="text" >
+				<select class="form-control" alias="${c.alias}" field="${c.field}" fieldType="${c.type.name}" operator="${c.operator}" id="${inputId}" type="text" >
 					<option value="" ${(c.value??||c.value?size == 0)?string('selected','')}>-- 请选择 --</option>
 					<#list c.parsedData as d>
 						<option value="${d.value}" ${(c.value == d.value?string)?string('selected','')}>${d.text}</option>
 					</#list>
 				</select>
 				<#elseif c.inputType=="DATEBOX"/>
-				<input class="form-control datebox" alias="${c.alias}" field="${c.field}" fieldType="${c.type.name}" operator="${c.operator}" ${inputId} type="text" value="${c.value!''}"/>
+				<input class="form-control datebox" alias="${c.alias}" field="${c.field}" fieldType="${c.type.name}" operator="${c.operator}" id="${inputId}" type="text" value="${c.value!''}"/>
 			</#if>
 		</div>
 	</#list>
@@ -62,12 +70,14 @@
 	</thead>
 	<tbody>
 		<#list pageList as strarr>
-		<tr>
+		<tr id="${strarr[0]}">
 			<#if pageDefinition.queryDefinition.showIndex??>
 			<td>${strarr_index+1}</td>
 			</#if>
 			<#list strarr as str>
+			<#if str_index gt 0>
 			<td>${str}</td>
+			</#if>
 			</#list>
 		</tr>
 		</#list>

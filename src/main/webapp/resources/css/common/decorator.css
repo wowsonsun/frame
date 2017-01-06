@@ -62,24 +62,3 @@ ul{
     position: relative;
     right: 10px;
 }
-div#bg {
-    position: fixed;
-    height: 100%;
-    width: 100%;
-    background-repeat: no-repeat;
-    background-position-x: center;
-    z-index: -1000;
-    background-size: cover;
-    -webkit-background-size: cover;
-    -o-background-size: cover;
-    /* filter:blur(2px); */
-}
-div#bgCover {
-    position: fixed;
-    height: 100%;
-    width: 100%;
-    z-index: -999;
-    /* background-color: #252626; */
-    /* opacity: 0.5; */
-    background: linear-gradient(rgba(37,38,38,0.8),rgba(37,38,38,0.5));
-}

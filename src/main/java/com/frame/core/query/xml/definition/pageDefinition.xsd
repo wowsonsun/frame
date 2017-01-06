@@ -109,6 +109,12 @@
           </xs:complexType>
         </xs:element>
       </xs:sequence>
+      <xs:sequence maxOccurs="1" minOccurs="0">
+        <xs:element name="delete"></xs:element>
+      </xs:sequence>
+      <xs:sequence maxOccurs="1" minOccurs="0">
+        <xs:element name="manage"></xs:element>
+      </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:complexType name="searchDefinitionType">
@@ -133,14 +139,7 @@
             </xs:simpleType>
           </xs:attribute>
           <xs:attribute name="defaultValue"></xs:attribute>
-          <xs:attribute name="inputType">
-            <xs:simpleType>
-              <xs:restriction base="xs:NMTOKEN">
-                <xs:enumeration value="TEXT"/>
-                <xs:enumeration value="SELECT"/>
-                <xs:enumeration value="DATEBOX"/>
-              </xs:restriction>
-            </xs:simpleType>
+          <xs:attribute name="inputType" type="editorType">
           </xs:attribute>
           <xs:attribute name="displayText" use="required"></xs:attribute>
           <xs:attribute name="selectTextField"></xs:attribute>
@@ -154,4 +153,12 @@
       </xs:element>
     </xs:sequence>
   </xs:complexType>
+  <xs:simpleType name="editorType">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="TEXT"/>
+      <xs:enumeration value="NUMBER"/>
+      <xs:enumeration value="SELECT"/>
+      <xs:enumeration value="DATEBOX"/>
+    </xs:restriction>
+  </xs:simpleType>
 </xs:schema>

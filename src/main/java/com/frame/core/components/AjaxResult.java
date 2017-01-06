@@ -13,8 +13,8 @@ public class AjaxResult implements Serializable{
 	public static void setGson(Gson gson) {
 		AjaxResult.gson = gson;
 	}
-	private String code;
-	private String message;
+	private String code="00";
+	private String message="成功";
 	private Object data;
 	public String getCode() {
 		return code;

@@ -6,16 +6,19 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.frame.core.components.AjaxResult;
 import com.frame.core.query.xml.definition.ColumnDefinition;
 import com.frame.core.query.xml.definition.QueryConditions;
 import com.frame.core.query.xml.definition.QueryDefinition;
 import com.frame.core.query.xml.definition.SortEntry;
+import com.frame.core.utils.HttpContextUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.frame.core.components.NavigationOption;
@@ -59,9 +62,15 @@ public abstract class GeneralController {
 		List<NavigationOption> options=new ArrayList<NavigationOption>();
 		options.add(new NavigationOption("添加", "void(0)"));
 		options.add(new NavigationOption("修改", "void(0)"));
-		options.add(new NavigationOption("删除", "void(0)"));
+		if(pageHolder.getPageDefinition().getDelete()!=null) options.add(new NavigationOption("删除", "deleteRow()"));//权限
 		ThreadBinder.set(AuthorityService.NAVIGATION_OPTIONS_KEY,options);
 		return mv;
+	}
+	@RequestMapping("/delete")
+	@ResponseBody
+	public Object delete(Long id){
+		service.delete(id,pageHolder.getPageDefinition().getQueryDefinition().getMappedClass().get(0).getMappedClass());
+		return new AjaxResult();
 	}
 	private String[] mergeSortCondition(List<ColumnDefinition> columnDefinitions, List<SortEntry> sortEntries){
 		String[] mergedSort=new String[columnDefinitions.size()];
@@ -83,16 +92,11 @@ public abstract class GeneralController {
 		}
 		return mergedSort;
 	}
+	//TODO 处理删除异常
 	@ExceptionHandler(value=Throwable.class)
 	public Object handleException(Throwable e,HttpServletRequest request,HttpServletResponse response) throws Throwable{
-		LOGGER.error("Control层捕获到异常。",e);
 		throw e;
-		//return null;
+//		return null;
 	}
-	@ExceptionHandler(value=JsonSyntaxException.class)
-	public Object handleJsonSyntaxException(Throwable e,HttpServletRequest request,HttpServletResponse response) throws Throwable{
-		LOGGER.error("Control层捕获到异常。",e);
-		throw e;
-		//return null;
-	}
+
 }
