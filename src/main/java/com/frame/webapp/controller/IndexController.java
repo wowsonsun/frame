@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import com.frame.core.components.UserAuthoritySubject;
+import com.frame.core.utils.HttpContextUtil;
 import org.sitemesh.webapp.contentfilter.HttpServletRequestFilterable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,8 +22,8 @@ import com.frame.webapp.interceptor.GeneralIntercepter;
 @RequestMapping({"/"})
 public class IndexController extends BaseController{
 	@RequestMapping({"/","/index"})
-	public Object index(){
-		return "index.html";
+	public Object main(){
+		return "redirect:/main";
 	}
 	@RequestMapping({"/main"})
 	public Object main(HttpServletRequest request){
@@ -30,14 +31,15 @@ public class IndexController extends BaseController{
 		return "main.jsp";
 	}
 	@Autowired
-	AuthorityService authorityService;
+	private AuthorityService authorityService;
+	@SuppressWarnings("unchecked")
 	@RequestMapping({"/decorator"})
-	public Object decorator(){
-		String requestURI= (String) UserAuthoritySubject.getSession().getAttribute(GeneralIntercepter.REQUEST_URI_SESSION_KEY);
-		UserAuthoritySubject.getSession().setAttribute(GeneralIntercepter.REQUEST_URI_SESSION_KEY, null);
+	public Object decorator(HttpServletRequest request){
+		String requestURI= (String) request.getAttribute(GeneralIntercepter.REQUEST_URI_REQUEST_KEY);
+//		UserAuthoritySubject.getSession().setAttribute(GeneralIntercepter.REQUEST_URI_SESSION_KEY, null);
 		List<MenuEntity> menuLocation=authorityService.getMenuLocation(requestURI);
 		List<MenuEntity> menuList=authorityService.getMenuList();
-		List<NavigationOption> options=ThreadBinder.get(AuthorityService.NAVIGATION_OPTIONS_KEY);
+		List<NavigationOption> options= (List<NavigationOption>) request.getAttribute(AuthorityService.NAVIGATION_OPTIONS_KEY);
 		return new ModelAndView("decorator/decorator")
 				.addObject("navigation", menuLocation)
 				.addObject("options", options)

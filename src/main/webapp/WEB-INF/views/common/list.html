@@ -13,7 +13,7 @@
 </#list></#if>
 </head>
 <body>
-
+<div class="main-panel">
 <div class="query-panel">
 	<#assign conditions =queryConditions.conditions/>
 	<#assign showSubmit=conditions?size gt 0/>
@@ -30,9 +30,11 @@
 				<input class="form-control"  alias="${c.alias}" field="${c.field}" fieldType="${c.type.name}" operator="${c.operator}" id="${inputId}" type="number" value="${c.value!''}"/>
 				<#elseif c.inputType=="SELECT"/>
 				<select class="form-control" alias="${c.alias}" field="${c.field}" fieldType="${c.type.name}" operator="${c.operator}" id="${inputId}" type="text" >
-					<option value="" ${(c.value??||c.value?size == 0)?string('selected','')}>-- 请选择 --</option>
+					<#if c.nullable>
+						<option value="" ${(c.value??)?string('selected','')}>-- 请选择 --</option>
+					</#if>
 					<#list c.parsedData as d>
-						<option value="${d.value}" ${(c.value == d.value?string)?string('selected','')}>${d.text}</option>
+						<option value="${d.value}" ${(c.value??&&c.value?string == d.value?string)?string('selected','')}>${d.text}</option>
 					</#list>
 				</select>
 				<#elseif c.inputType=="DATEBOX"/>
@@ -94,6 +96,7 @@
 <input type="hidden" id="page" value="${queryConditions.page}"/>
 <input type="hidden" id="pageSize" value="${queryConditions.pageSize}"/>
 </div>
-</div>	
+</div>
+</div>
 </body>
 </html>

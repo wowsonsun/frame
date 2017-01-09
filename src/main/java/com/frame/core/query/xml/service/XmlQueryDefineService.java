@@ -1,13 +1,13 @@
 package com.frame.core.query.xml.service;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.frame.core.components.BaseEntity;
+import com.frame.core.query.xml.*;
 import com.frame.core.query.xml.definition.*;
+import com.frame.core.utils.ReflectUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.hibernate.Query;
@@ -18,9 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.frame.core.query.xml.DataFilter;
-import com.frame.core.query.xml.DefaultDataFilter;
-import com.frame.core.query.xml.QueryHqlResolver;
 import com.frame.dao.GeneralDao;
 import org.springframework.util.StringUtils;
 
@@ -30,11 +27,15 @@ public class XmlQueryDefineService {
 	private final static Logger LOGGER = LoggerFactory.getLogger(XmlQueryDefineService.class);
 	public static class DataSetTransferException extends RuntimeException{
 		private static final long serialVersionUID = 1L;
-		public DataSetTransferException(Throwable t){super(t);}
+		DataSetTransferException(Throwable t){super(t);}
 	}
 	public static class QueryConditionParseException extends RuntimeException{
 		private static final long serialVersionUID = 1L;
-		public QueryConditionParseException(String message){super(message);}
+		QueryConditionParseException(String message){super(message);}
+	}
+	public static class ManageExecuteException extends RuntimeException{
+		private static final long serialVersionUID = 1L;
+        ManageExecuteException(Throwable t){super(t);}
 	}
 	private DataFilter defaultDataFilter=new DefaultDataFilter();
 	@Autowired
@@ -68,11 +69,11 @@ public class XmlQueryDefineService {
 				else if (column.getFilter()!=null){
 					try {
 						DataFilter f=(DataFilter) column.getFilter().newInstance();
-						stra[j+1]=f.filt(map.get("col_"+j));
+						stra[j+1]=f.filt(map.get("col_"+j),column);
 					} catch (Exception e) {
 						throw new DataSetTransferException(e);
 					}
-				}else stra[j+1]=defaultDataFilter.filt(map.get("col_"+j));
+				}else stra[j+1]=defaultDataFilter.filt(map.get("col_"+j),column);
 			}
 			list.add(stra);
 		}
@@ -98,72 +99,157 @@ public class XmlQueryDefineService {
 	@Autowired
 	public Gson gson;
 	/**
-	 * TODO
-	 * 1.设置值
-	 * 2.找到类型放进去
-	 * 3.如果类型为SELECT 的话要初始化要选择的数据
-	 * @param queryConditions
-	 * @param queryDefinition
-	 * @return
+     * 准备查询条件
+	 * @param queryConditions 浏览器传送过来结构化之后的参数
+	 * @param queryDefinition xml中拉取的设置
+	 * @return 查询条件 TODO应为复制之后的。
 	 */
 	public QueryConditions prepareQueryCondition(QueryConditions queryConditions,QueryDefinition queryDefinition){
 		List<QueryConditionDefine> res=queryDefinition.getQueryConditionDefines();
 		for(QueryConditionDefine q : res){
-			if (queryConditions.getConditions()!=null) for (QueryCondition q2:queryConditions.getConditions()){
-				if (q.equalsField(q2)){
-					q.setValue(defaultDataFilter.filt(q2.getValue()));
-					break;
-				}
+			if (queryConditions.getConditions()!=null)
+			    for (QueryCondition q2:queryConditions.getConditions()){
+                    if (q.equalsField(q2)){
+                        q.setValue(defaultDataFilter.filt(q2.getValue(),null));
+                        break;
+				    }
 			}
 			if (q.getValue()==null) q.setValue(q.getDefaultValue());
 			Class<?> type=null;
 			for (MappedClassEntry mappedClass:queryDefinition.getMappedClass()){
 				if (StringUtils.isEmpty(mappedClass.getAlias())&&StringUtils.isEmpty(q.getAlias())||mappedClass.getAlias()!=null&&mappedClass.getAlias().equals(q.getAlias())){
-					try {
-						type=resolveFieldClass(mappedClass.getMappedClass(),q.getField());
-						break;
-					} catch (NoSuchMethodException e) {
-						throw new DataSetTransferException(e);
-					}
+                    type=ReflectUtil.resolveFieldClass(mappedClass.getMappedClass(),q.getField());
+                    break;
 				}
 				if (mappedClass.getJoin()!=null) for (JoinEntry joinEntry:mappedClass.getJoin()){
 					if (StringUtils.isEmpty(joinEntry.getAs())&&StringUtils.isEmpty(q.getAlias())||joinEntry.getAs()!=null&&joinEntry.getAs().equals(q.getAlias())){
-						try {
-							Class<?> optionClass=resolveFieldClass(mappedClass.getMappedClass(),joinEntry.getField());
-							if (q.getOptionClass()==null) q.setOptionClass(optionClass);
-							type=resolveFieldClass(optionClass,q.getField());
-							break;
-						} catch (NoSuchMethodException e) {
-							throw new DataSetTransferException(e);
-						}
+                        Class<?> optionClass=ReflectUtil.resolveFieldClass(mappedClass.getMappedClass(),joinEntry.getField());
+                        if (q.getOptionClass()==null) q.setOptionClass(optionClass);
+                        type=ReflectUtil.resolveFieldClass(optionClass,q.getField());
+                        break;
 					}
 				}
 				if (type!=null) break;
 			}
 			if (type!=null) q.setType(type);
 			else throw new QueryConditionParseException("No such field found in queryDedination! alias:"+q.getAlias()+" field:"+q.getField());
-			if ("SELECT".equals(q.getInputType())){
-				if (!StringUtils.isEmpty(q.getStaticData())){
-					q.setParsedData(gson.fromJson(q.getStaticData(),new TypeToken<List<Map<String,String>>>(){}.getType()));
-				}else{
-					if (q.getOptionClass()!=null&&BaseEntity.class.isAssignableFrom(q.getOptionClass())){
-						List<?> list= dao.findMap("select "+q.getSelectTextField()+" as text,"+q.getSelectValueField() +" as value from "+q.getOptionClass().getName()+" ");
-						q.setParsedData(list);
-					}else throw new QueryConditionParseException("Select option data parse Exception.No static data found nor optionClass found.");
-				}
-			}
+			prepareSelectData(q);
 		}
 		queryConditions.setConditions(new ArrayList<QueryCondition>(res));
 		return queryConditions;
 	}
-	private static Class<?> resolveFieldClass(Class<?> cls,String field) throws NoSuchMethodException {
-		String methodName="get"+Character.toUpperCase(field.charAt(0))+field.substring(1);
-		Method method=cls.getMethod(methodName);
-		return method.getReturnType();
-	}
+	private void prepareSelectData(QueryConditionDefine q){
+        if ("SELECT".equals(q.getInputType())){
+            if (!StringUtils.isEmpty(q.getStaticData())){
+                q.setParsedData(gson.fromJson(q.getStaticData(),new TypeToken<List<Map<String,String>>>(){}.getType()));
+            }else{
+                if (q.getOptionClass()!=null&&BaseEntity.class.isAssignableFrom(q.getOptionClass())){
+                    List<?> list= dao.findMap("select "+q.getSelectTextField()+" as text,"+q.getSelectValueField() +" as value from "+q.getOptionClass().getName()+" ");
+                    q.setParsedData(list);
+                }else throw new QueryConditionParseException("Select option data parse Exception.No static data found nor optionClass found.");
+            }
+        }
+    }
+
 	public void delete(Long id,Class<?> cls){
 		dao.executeHql("delete from "+cls.getName()+" where id=?",id);
 	}
+	@SuppressWarnings("unchecked")
+	public <T> T get(Class<? extends BaseEntity> cls, Serializable id){
+		return (T)dao.getHibernateTemplate().get(cls,id);
+	}
+	public Map<String,Object> prepareManage(Long id,Manage manage,Class<? extends BaseEntity> targetClass){
+	    Map<String,Object> models=new HashMap<String,Object>();
+        BaseEntity target=null;
+        List<ManageField> manageFields=manage.getField();
+        try {
+            if (id == null) {
+                target = targetClass.newInstance();
+                for (ManageField manageField:manageFields) {
+                    manageField.setValue(manageField.getDefaultValue());
+                }
+            }else{
+                target=this.get(targetClass,id);
+                for (ManageField manageField:manageFields) {
+                    manageField.setValue(ReflectUtil.getValueByField(target,manageField.getField()));
+                }
+            }
+            for (ManageField manageField:manageFields) {
+                prepareSelectData(manageField);
+                if (BaseEntity.class.isAssignableFrom(ReflectUtil.resolveFieldClass(targetClass,manageField.getField()))){
+                    manageField.setIsEntity(true);
+                    if (manageField.getValue()!=null&&BaseEntity.class.isAssignableFrom(manageField.getValue().getClass()))
+                        manageField.setValue(ReflectUtil.getValueByField(manageField.getValue(),manageField.getSelectValueField()));
+                }
+            }
+            models.put("entity",target);
+            models.put("manageFields",manageFields);
+        }catch (Exception e) {
+            throw new ManageExecuteException(e);
+        }
+	    return models;
+    }
+    public <T extends BaseEntity> void saveManage(String paramString,GeneralController<T> c){
+	    Class<? extends BaseEntity> targetClass=c.getTargetClass();
+        PageDefinitionHolder pageHolder=c.getPageHolder();
+        BaseEntity entity =gson.fromJson(paramString,targetClass);
+        BaseEntity toSave=null;
+        List<ManageField> manageFields=pageHolder.getPageDefinition().getManage().getField();
+        if (entity.getId()==null){
+            toSave=entity;
+        }else{
+            toSave=get(targetClass,entity.getId());
+            for(ManageField manageField:manageFields){
+                if(BaseEntity.class.isAssignableFrom(ReflectUtil.resolveFieldClass(targetClass, manageField.getField()))){
+                    Object originalValue=null;
+                    BaseEntity originalFieldEntity=ReflectUtil.getValueByField(toSave,manageField.getField());
+                    if (originalFieldEntity!=null) originalValue=ReflectUtil.getValueByField(originalFieldEntity,manageField.getSelectValueField());
+                    Object updateValue=null;
+                    BaseEntity updateFieldEntity=ReflectUtil.getValueByField(entity,manageField.getField());
+                    if (updateFieldEntity!=null) updateValue=ReflectUtil.getValueByField(updateFieldEntity,manageField.getSelectValueField());
+                    if (updateValue==null&&originalValue!=null){
+                        ReflectUtil.setValueByField(toSave,manageField.getField(),null);
+                    }else if (updateValue!=null&&!updateValue.equals(originalValue)){
+                        ReflectUtil.setValueByField(toSave,manageField.getField(),updateFieldEntity);
+                    }
+                }else{
+                    ReflectUtil.setValueByField(toSave,manageField.getField(), ReflectUtil.getValueByField(entity,manageField.getField()));
+                }
+            }
+        }
+        for(ManageField manageField:manageFields){
+            Object fieldValue=ReflectUtil.getValueByField(toSave,manageField.getField());
+            if(fieldValue!=null&&BaseEntity.class.isAssignableFrom(fieldValue.getClass())){
+                BaseEntity fieldEntity=(BaseEntity)fieldValue;
+                ReflectUtil.setValueByField(toSave,manageField.getField(),get(fieldEntity.getClass(),(Serializable) ReflectUtil.getValueByField(fieldValue,manageField.getSelectValueField())));
+            }
+        }
+        if (pageHolder.getPageDefinition().getManage().getBeforeManage()!=null){
+            Method toInvoke=pageHolder.getPageDefinition().getManage().getBeforeManageMethod();
+            Class<?>[] argsType=toInvoke.getParameterTypes();
+            Object[] args=new Object[argsType.length];
+            for(int i=0;i<argsType.length;i++){
+                if (argsType[i].isAssignableFrom(targetClass)){
+                    args[i]=toSave;
+                }
+            }
+            try {
+                toInvoke.setAccessible(true);
+                if ((Boolean)toInvoke.invoke(this,args)) saveOrUpdate(toSave);
+            } catch (Exception e) {
+                throw new GeneralController.GeneralControllerExcuteException(e);
+            }
+        }else{
+            saveOrUpdate(toSave);
+        }
+    }
+    public void saveOrUpdate(BaseEntity entity){
+	    if (entity.getId()==null){
+	        dao.getHibernateTemplate().save(entity);
+        }else{
+	        dao.getHibernateTemplate().update(entity);
+        }
+    }
 	public static void main(String[] args) {
 		System.out.println(List.class.isAssignableFrom(ArrayList.class));
 	}

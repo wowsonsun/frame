@@ -22,6 +22,10 @@ public class QueryConditions {
 	private int pageSize=10;
 	private List<SortEntry> sortEntries=new ArrayList<SortEntry>();
 
+	/**
+	 * 将字符串类型的查询参数转换成为结构化数据
+	 * @return this
+	 */
 	public QueryConditions parseFromParamString(){
 		if (paramString!=null){
 			if (((HttpServletRequest)ThreadBinder.get(ThreadBinder.REQUEST)).getMethod().equalsIgnoreCase("get"))try {

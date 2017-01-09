@@ -18,7 +18,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 public class GeneralIntercepter implements HandlerInterceptor {
 	private final static Logger LOGGER=LoggerFactory.getLogger(GeneralIntercepter.class);
-	public static final String REQUEST_URI_SESSION_KEY=GeneralIntercepter.class.getName()+".requestURI";
+	public static final String REQUEST_URI_REQUEST_KEY=GeneralIntercepter.class.getName()+".requestURI";
 	public static final String REQUEST_URI_BEFORE_LOGIN_THREAD_KEY=GeneralIntercepter.class.getName()+".REQUESTURI_BEFOTRLOGIN";
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -26,19 +26,17 @@ public class GeneralIntercepter implements HandlerInterceptor {
 		String requestURI=request.getServletPath();
 		if (requestURI.startsWith("/resources/")) return true;
 		boolean flag=false;
-		if (!UserAuthoritySubject.isUserVerify()&&requestURI.indexOf("login")==-1){//未登录 进入
+		if (!UserAuthoritySubject.isUserVerify()&& !requestURI.contains("login")){//未登录 进入
 			if (HttpContextUtil.isAjaxRequest()){
 				response.setHeader("SESSION_STATUS", "TIME_OUT");
-				return flag;
 			}else if(request.getHeader("accept").matches(".*html.*")){
-				request.getSession().setAttribute(REQUEST_URI_BEFORE_LOGIN_THREAD_KEY, requestURI);
+				request.getSession().setAttribute(REQUEST_URI_BEFORE_LOGIN_THREAD_KEY, requestURI+"?"+request.getQueryString());
 				response.sendRedirect(request.getContextPath()+"/login");
-				return flag;
 			}
 		}else{
 			flag=true;
-			if (request.getHeader("accept").matches(".*html.*")&&UserAuthoritySubject.getSession().getAttribute(REQUEST_URI_SESSION_KEY)==null) {
-				UserAuthoritySubject.getSession().setAttribute(REQUEST_URI_SESSION_KEY,requestURI);
+			if (request.getHeader("accept").matches(".*html.*")&&request.getAttribute(REQUEST_URI_REQUEST_KEY)==null) {
+				request.setAttribute(REQUEST_URI_REQUEST_KEY,requestURI);
 				LOGGER.info("Intercepter-> set requestURI : "+requestURI+" in session");
 			}
 		}
@@ -47,13 +45,13 @@ public class GeneralIntercepter implements HandlerInterceptor {
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
-		if (modelAndView!=null) {
+		/*if (modelAndView!=null) {
 			String viewName = modelAndView.getViewName();
 			if (viewName.startsWith("redirect:")){
 				viewName=viewName.substring(9);
 				UserAuthoritySubject.getSession().setAttribute(REQUEST_URI_SESSION_KEY,viewName);
 			}
-		}
+		}*/
 	}
 
 	@Override
@@ -61,6 +59,7 @@ public class GeneralIntercepter implements HandlerInterceptor {
 			throws Exception {
 		if (e!=null){
 			LOGGER.error("拦截器捕获到异常。",e);
+//			request.getSession().removeAttribute(REQUEST_URI_SESSION_KEY);
 			if (HttpContextUtil.isAjaxRequest()) {
 				AjaxResult res = new AjaxResult();
 				res.setCode("-1");

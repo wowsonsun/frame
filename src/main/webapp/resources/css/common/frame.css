@@ -58,6 +58,8 @@
     visibility: hidden;
 }
 .form-panel{
+}
+.main-panel{
     background-color: #252526;
     color: #fbfdff;
 }
@@ -112,4 +114,37 @@ div#bgCover {
     /* background-color: #252626; */
     /* opacity: 0.5; */
     background: linear-gradient(rgba(37,38,38,0.8),rgba(37,38,38,0.5));
+}
+.col-4-12{
+    overflow: hidden;
+    width: 33.33%;
+    float: left;
+}
+.col-8-12{
+    overflow: hidden;
+    width: 66.67%;
+    float: left;
+}
+.row{
+    width:100%;
+    overflow: hidden;
+}
+.row:after.col-4-12:after.col-8-12:after{
+    content: "&nbsp;";
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+.text-center{
+    text-align: center;
+    text-align: center !important;
+}
+.head-title{
+    padding: 0px 20px 5px;
+    border-bottom: solid 1px;
+    margin: 5px 50px 5px;
+}
+.foot-block{
+    height: 30px;
+    width:100%;
 }

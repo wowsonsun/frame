@@ -15,6 +15,7 @@ public class QueryCondition{
 	private String operator;
 	private String extra;
 	private boolean isParsed;
+	private boolean nullable=true;
 	public QueryCondition parseValue(){
 		isParsed =true;
 		if (!StringUtils.isEmpty(this.value)) this.value=gson.fromJson("'"+value+"'", type);
@@ -74,5 +75,13 @@ public class QueryCondition{
 						|| this.getAlias()!=null&& this.getAlias().equals(q.getAlias());
 		boolean isFieldEqual= this.getField().equals(q.getField());
 		return isAliasEqual&&isFieldEqual&&this.getOperator().equals(q.getOperator());
+	}
+	@XmlAttribute
+	public boolean getNullable() {
+		return nullable;
+	}
+
+	public void setNullable(boolean nullable) {
+		this.nullable = nullable;
 	}
 }

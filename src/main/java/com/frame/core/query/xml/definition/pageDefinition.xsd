@@ -110,10 +110,17 @@
         </xs:element>
       </xs:sequence>
       <xs:sequence maxOccurs="1" minOccurs="0">
-        <xs:element name="delete"></xs:element>
+        <xs:element name="delete" type="deleteType"></xs:element>
       </xs:sequence>
       <xs:sequence maxOccurs="1" minOccurs="0">
-        <xs:element name="manage"></xs:element>
+        <xs:element name="manage">
+          <xs:complexType>
+            <xs:attribute name="beforeManage" default="beforeManage"/>
+            <xs:sequence >
+              <xs:element  name="field" type="manageType"></xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -146,6 +153,8 @@
           <xs:attribute name="selectValeField"></xs:attribute>
           <xs:attribute name="inputId"></xs:attribute>
           <xs:attribute name="optionClass"></xs:attribute>
+          <xs:attribute name="nullable" type="xs:boolean">
+          </xs:attribute>
           <xs:sequence minOccurs="0" maxOccurs="1">
             <xs:element name="staticData"></xs:element>
           </xs:sequence>
@@ -161,4 +170,23 @@
       <xs:enumeration value="DATEBOX"/>
     </xs:restriction>
   </xs:simpleType>
+  <xs:complexType name="deleteType">
+    <xs:attribute name="beforeDelete" default="beforeDelete"></xs:attribute>
+  </xs:complexType>
+  <xs:complexType name="manageType">
+    <xs:attribute name="field" use="required"></xs:attribute>
+    <xs:attribute name="defaultValue"></xs:attribute>
+    <xs:attribute name="inputType" type="editorType">
+    </xs:attribute>
+    <xs:attribute name="displayText" use="required"></xs:attribute>
+    <xs:attribute name="selectTextField"></xs:attribute>
+    <xs:attribute name="selectValeField"></xs:attribute>
+    <xs:attribute name="inputId"></xs:attribute>
+    <xs:attribute name="optionClass"></xs:attribute>
+    <xs:sequence minOccurs="0" maxOccurs="1">
+      <xs:element name="staticData"></xs:element>
+    </xs:sequence>
+    <xs:attribute name="nullable" type="xs:boolean">
+    </xs:attribute>
+  </xs:complexType>
 </xs:schema>

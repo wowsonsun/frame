@@ -125,5 +125,5 @@
 	        <bean class="com.host.app.web.interceptor.LoginInterceptor"/>  
 	    </mvc:interceptor>   -->
 	</mvc:interceptors>
-	<bean class="com.frame.service.StartupListener"></bean>
+	<bean class="com.frame.webapp.listener.StartupListener"></bean>
 </beans>

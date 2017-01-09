@@ -46,6 +46,16 @@
 			});
 		}
 	};
+	window.addRow=function(){
+		submitParams("add","GET",{});
+	};
+	window.manageRow=function(){
+        var selectedId=$(".data-panel>table>tbody>tr.selected").attr("id");
+        //TODO 封装？
+        if (!!selectedId){
+            submitParams("edit","GET",{id:selectedId});
+        }
+	}
 })();
 $(document).ready(function(){
 	$('.data-panel>table').on("click","tbody>tr",function(e){
@@ -107,5 +117,5 @@ $(document).ready(function(){
     $('.datebox').addClass("Wdate");
     $('.datebox').on("focus",function(){
     	WdatePicker(this);
-	})
+	});
 });

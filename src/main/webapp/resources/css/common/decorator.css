@@ -32,7 +32,7 @@ ul{
 }
 .page-body-content {
     width: 890px;
-    color: #494b4c;
+    color: #fff;
     float: left;
     overflow: hidden;
     position: relative;
@@ -43,7 +43,7 @@ ul{
 }
 .right-wrap {
     float: left;
-    background: #fff;
+    background-color: #252526;;
     overflow: hidden;
     position: relative;
     width: 100%;

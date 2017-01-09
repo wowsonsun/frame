@@ -15,8 +15,14 @@
     text-align: center;
     /* margin: 0; */
 }
+.data-panel>table tr{
+	color: #494b4c;
+}
 .data-panel>table tr:nth-child(2n){
 	background-color: #f5f5f5;
+}
+.data-panel>table tr:nth-child(2n-1){
+	background-color: #fff;
 }
 .data-panel>table tr:hover{
 	background-color: #f0f0f0;
@@ -78,6 +84,4 @@ div#pagerbar>golast:after {
 	content: "↓";
 }
 .query-panel{
-	background-color: #252526;
-	color: #fbfdff;
 }

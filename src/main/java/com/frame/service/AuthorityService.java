@@ -44,9 +44,10 @@ public class AuthorityService {
 			menuList.add(target);
 			while(target.getParent()!=null){
 				target=target.getParent();
-				target.getDisplayName();
-				target.getRequestURI();
-				menuList.add(target);
+				MenuEntity targetCopy=new MenuEntity();
+				targetCopy.setDisplayName(target.getDisplayName());
+				targetCopy.setRequestURI(target.getRequestURI());
+				menuList.add(targetCopy);
 			}
 			Collections.reverse(menuList);
 		}

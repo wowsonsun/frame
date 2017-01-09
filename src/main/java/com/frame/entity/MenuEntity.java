@@ -2,13 +2,7 @@ package com.frame.entity;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.frame.core.components.BaseEntity;
 @Table(name="sys_menu")
@@ -19,9 +13,10 @@ public class MenuEntity extends BaseEntity {
 	private String requestURI;
 	private boolean hidden;
 	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(foreignKey = @ForeignKey(name="null"))
 	private MenuEntity parent;
 	@OneToMany(fetch=FetchType.LAZY,cascade=CascadeType.ALL)
-	@JoinColumn(name="parent_id")
+	@JoinColumn(name="parent_id",foreignKey =  @ForeignKey(name="null"))
 	private List<MenuEntity> children;
 	public List<MenuEntity> getChildren() {
 		return children;

@@ -26,9 +26,8 @@
 		}
 	} 
 	window.ctx=(function(){
-		var local = window.location;  //http://www.w3school.com.cn/js/js_window_location.asp
-	    var contextPath = local.pathname.split("/")[1];  // /js/js_window_location.asp
-	    var basePath = local.protocol+"//"+local.host/*+":"+local.port*/+"/"+contextPath;
+	    var contextPath =  window.location.pathname.split("/")[1];
+	    var basePath =  window.location.protocol+"//"+ window.location.host/*+":"+local.port*/+"/"+contextPath;
 	    return basePath;
 	})();
 	window.escapeHTML=function(str){
@@ -55,7 +54,7 @@
 		}
 		var id=encrypt(new Date());
 		form=form.format({id:id,url:url,method:method,inputs:inputs});
-		document.body.innerHTML=(form)+document.body.innerHTML;
+        $(form).appendTo($("body"));
 		document.getElementById(id).submit();
 	};
 	$.ajaxSetup({
