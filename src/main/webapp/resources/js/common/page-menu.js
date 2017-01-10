@@ -4,7 +4,7 @@
 (function(){
 	$(document).ready(function(){
 		$('#menu ul ul').hide();
-		$('#menu ul:has(.current)').show();
+		$('#menu ul:has(.current),#menu ul:has(.open)').show();
 		$('#menu .menuItem').on('click',function(){
 			var $next=$(this).next();
 			if ($next.children().length>0)

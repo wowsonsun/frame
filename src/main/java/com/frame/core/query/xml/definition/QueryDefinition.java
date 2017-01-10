@@ -82,5 +82,12 @@ public class QueryDefinition {
 	public void setQueryConditionDefines(List<QueryConditionDefine> queryConditionDefines) {
 		this.queryConditionDefines = queryConditionDefines;
 	}
+	public List<QueryConditionDefine> cloneQueryConditionDefine() throws CloneNotSupportedException {
+		ArrayList<QueryConditionDefine> res=new ArrayList<QueryConditionDefine>();
+		for(QueryConditionDefine queryConditionDefine:queryConditionDefines){
+			res.add((QueryConditionDefine) queryConditionDefine.clone());
+		}
+		return res;
+	}
 
 }

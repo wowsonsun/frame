@@ -30,7 +30,9 @@ public class GeneralIntercepter implements HandlerInterceptor {
 			if (HttpContextUtil.isAjaxRequest()){
 				response.setHeader("SESSION_STATUS", "TIME_OUT");
 			}else if(request.getHeader("accept").matches(".*html.*")){
-				request.getSession().setAttribute(REQUEST_URI_BEFORE_LOGIN_THREAD_KEY, requestURI+"?"+request.getQueryString());
+				String urlToSave=requestURI;
+				if (request.getQueryString()!=null) urlToSave+="?"+request.getQueryString();
+				request.getSession().setAttribute(REQUEST_URI_BEFORE_LOGIN_THREAD_KEY, urlToSave);
 				response.sendRedirect(request.getContextPath()+"/login");
 			}
 		}else{

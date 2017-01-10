@@ -5,8 +5,9 @@ import com.google.gson.Gson;
 import org.springframework.util.StringUtils;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlTransient;
 
-public class QueryCondition{
+public class QueryCondition implements Cloneable{
 	private static final Gson gson=GsonFactory.buildDefaultGson();
 	private String field;
 	private String alias;
@@ -14,19 +15,16 @@ public class QueryCondition{
 	private Object value;
 	private String operator;
 	private String extra;
-	private boolean isParsed;
 	private boolean nullable=true;
-	public QueryCondition parseValue(){
-		isParsed =true;
-		if (!StringUtils.isEmpty(this.value)) this.value=gson.fromJson("'"+value+"'", type);
-		else this.value=null;
-		return this;
+	public Object parsedValue(){
+		if (!StringUtils.isEmpty(this.value)) return gson.fromJson("'"+value.toString().replaceAll("'","\\'")+"'", type);
+		else return null;
 	}
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		String json="{field:'field',alias:'alias',type:'java.util.Date',value:'2013-2-2 12:12:12',operator:'LIKE'}";
 		QueryCondition q=GsonFactory.buildDefaultGson().fromJson(json, QueryCondition.class);
 		System.out.println(q.parseValue().getValue());
-	}
+	}*/
 	@XmlAttribute
 	public String getField() {
 		return field;
@@ -54,8 +52,9 @@ public class QueryCondition{
 	public void setExtra(String extra) {
 		this.extra = extra;
 	}
+	@XmlTransient
 	public Object getValue() {
-		if(!isParsed) this.parseValue();
+//		if(!isParsed) this.parseValue();
 		return value;
 	}
 	public void setValue(Object value) {
@@ -80,8 +79,12 @@ public class QueryCondition{
 	public boolean getNullable() {
 		return nullable;
 	}
-
 	public void setNullable(boolean nullable) {
 		this.nullable = nullable;
 	}
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }

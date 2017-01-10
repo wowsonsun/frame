@@ -32,6 +32,8 @@ public class XmlQueryDefineService {
 	public static class QueryConditionParseException extends RuntimeException{
 		private static final long serialVersionUID = 1L;
 		QueryConditionParseException(String message){super(message);}
+
+		public QueryConditionParseException(Throwable e) {super(e);	}
 	}
 	public static class ManageExecuteException extends RuntimeException{
 		private static final long serialVersionUID = 1L;
@@ -50,7 +52,7 @@ public class XmlQueryDefineService {
 		int i=0;
 		if (conditions.getConditions()!=null) for (QueryCondition condition : conditions.getConditions()) {
 			if (StringUtils.isEmpty(condition.getValue())) continue;
-			query.setParameter(i, condition.getValue());
+			query.setParameter(i, condition.parsedValue());
 			i++;
 		}
 		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
@@ -88,7 +90,7 @@ public class XmlQueryDefineService {
 		if (conditions.getConditions()!=null) for (Iterator<QueryCondition> iterator = conditions.getConditions().iterator(); iterator.hasNext();) {
 			QueryCondition condition = iterator.next();
 			if (StringUtils.isEmpty(condition.getValue())) continue;
-			params.add(condition.getValue());
+			params.add(condition.parsedValue());
 		}
 		long count=dao.getUnique(selectHql, params.toArray());
 		int pageSize=conditions.getPageSize();
@@ -105,34 +107,21 @@ public class XmlQueryDefineService {
 	 * @return 查询条件 TODO应为复制之后的。
 	 */
 	public QueryConditions prepareQueryCondition(QueryConditions queryConditions,QueryDefinition queryDefinition){
-		List<QueryConditionDefine> res=queryDefinition.getQueryConditionDefines();
+		List<QueryConditionDefine> res= null;
+		try {
+			res = queryDefinition.cloneQueryConditionDefine();
+		} catch (CloneNotSupportedException e) {
+			throw new QueryConditionParseException(e);
+		}
 		for(QueryConditionDefine q : res){
-			if (queryConditions.getConditions()!=null)
+			if (queryConditions.getConditions()!=null)//将查询的条件回写至条件栏
 			    for (QueryCondition q2:queryConditions.getConditions()){
                     if (q.equalsField(q2)){
                         q.setValue(defaultDataFilter.filt(q2.getValue(),null));
                         break;
 				    }
 			}
-			if (q.getValue()==null) q.setValue(q.getDefaultValue());
-			Class<?> type=null;
-			for (MappedClassEntry mappedClass:queryDefinition.getMappedClass()){
-				if (StringUtils.isEmpty(mappedClass.getAlias())&&StringUtils.isEmpty(q.getAlias())||mappedClass.getAlias()!=null&&mappedClass.getAlias().equals(q.getAlias())){
-                    type=ReflectUtil.resolveFieldClass(mappedClass.getMappedClass(),q.getField());
-                    break;
-				}
-				if (mappedClass.getJoin()!=null) for (JoinEntry joinEntry:mappedClass.getJoin()){
-					if (StringUtils.isEmpty(joinEntry.getAs())&&StringUtils.isEmpty(q.getAlias())||joinEntry.getAs()!=null&&joinEntry.getAs().equals(q.getAlias())){
-                        Class<?> optionClass=ReflectUtil.resolveFieldClass(mappedClass.getMappedClass(),joinEntry.getField());
-                        if (q.getOptionClass()==null) q.setOptionClass(optionClass);
-                        type=ReflectUtil.resolveFieldClass(optionClass,q.getField());
-                        break;
-					}
-				}
-				if (type!=null) break;
-			}
-			if (type!=null) q.setType(type);
-			else throw new QueryConditionParseException("No such field found in queryDedination! alias:"+q.getAlias()+" field:"+q.getField());
+			if (q.getValue()==null) q.setValue(q.getDefaultValue());//默认查询值
 			prepareSelectData(q);
 		}
 		queryConditions.setConditions(new ArrayList<QueryCondition>(res));
@@ -161,7 +150,12 @@ public class XmlQueryDefineService {
 	public Map<String,Object> prepareManage(Long id,Manage manage,Class<? extends BaseEntity> targetClass){
 	    Map<String,Object> models=new HashMap<String,Object>();
         BaseEntity target=null;
-        List<ManageField> manageFields=manage.getField();
+        List<ManageField> manageFields= null;
+        try {
+            manageFields = manage.cloneFields();
+        } catch (CloneNotSupportedException e) {
+            throw new ManageExecuteException(e);
+        }
         try {
             if (id == null) {
                 target = targetClass.newInstance();
@@ -189,6 +183,7 @@ public class XmlQueryDefineService {
         }
 	    return models;
     }
+    @SuppressWarnings("unchecked")
     public <T extends BaseEntity> void saveManage(String paramString,GeneralController<T> c){
 	    Class<? extends BaseEntity> targetClass=c.getTargetClass();
         PageDefinitionHolder pageHolder=c.getPageHolder();
@@ -221,7 +216,7 @@ public class XmlQueryDefineService {
             Object fieldValue=ReflectUtil.getValueByField(toSave,manageField.getField());
             if(fieldValue!=null&&BaseEntity.class.isAssignableFrom(fieldValue.getClass())){
                 BaseEntity fieldEntity=(BaseEntity)fieldValue;
-                ReflectUtil.setValueByField(toSave,manageField.getField(),get(fieldEntity.getClass(),(Serializable) ReflectUtil.getValueByField(fieldValue,manageField.getSelectValueField())));
+                ReflectUtil.setValueByField(toSave,manageField.getField(),get((Class<? extends BaseEntity>) manageField.getOptionClass(),(Serializable) ReflectUtil.getValueByField(fieldValue,manageField.getSelectValueField())));
             }
         }
         if (pageHolder.getPageDefinition().getManage().getBeforeManage()!=null){

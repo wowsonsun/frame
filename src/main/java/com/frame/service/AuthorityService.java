@@ -47,6 +47,7 @@ public class AuthorityService {
 				MenuEntity targetCopy=new MenuEntity();
 				targetCopy.setDisplayName(target.getDisplayName());
 				targetCopy.setRequestURI(target.getRequestURI());
+				targetCopy.setId(target.getId());
 				menuList.add(targetCopy);
 			}
 			Collections.reverse(menuList);

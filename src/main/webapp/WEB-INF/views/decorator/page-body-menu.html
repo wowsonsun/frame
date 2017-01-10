@@ -8,7 +8,13 @@
 			<#list menuList as menuItem>
 				<#if !menuItem.hidden>
 				<li>
-					<div class="menuItem ${(menuItem.id==currentLocation.id)?string('current','')}" url="${menuItem.requestURI!''}">${menuItem.displayName}</div>
+                    <#assign isopen=false/>
+                    <#list navigation as menuEntity>
+                        <#if menuEntity.id == menuItem.id>
+                            <#assign isopen=true/>
+                        </#if>
+                    </#list>
+					<div class="menuItem ${isopen?string("open","")} ${(menuItem.id==currentLocation.id)?string('current','')}" url="${menuItem.requestURI!''}">${menuItem.displayName}</div>
 					<#if menuItem.children??>
 						<@menu menuItem.children/>
 					</#if>

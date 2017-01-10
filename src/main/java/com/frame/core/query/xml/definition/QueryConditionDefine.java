@@ -77,7 +77,6 @@ public class QueryConditionDefine extends  QueryCondition {
     public Class<?> getOptionClass() {
         return optionClass;
     }
-
     public void setOptionClass(Class<?> optionClass) {
         this.optionClass = optionClass;
     }

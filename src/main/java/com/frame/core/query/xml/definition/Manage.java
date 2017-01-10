@@ -3,6 +3,7 @@ package com.frame.core.query.xml.definition;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,5 +35,12 @@ public class Manage {
 
     public void setBeforeManageMethod(Method beforeManageMethod) {
         this.beforeManageMethod = beforeManageMethod;
+    }
+    public List<ManageField> cloneFields() throws CloneNotSupportedException {
+        ArrayList<ManageField> res=new ArrayList<ManageField>(field.size());
+        for(ManageField manageField:field){
+            res.add((ManageField) manageField.clone());
+        }
+        return res;
     }
 }
